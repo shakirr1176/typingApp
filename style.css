@@ -36,8 +36,18 @@ body{
     height: calc(var(--word-size) * 4);
     overflow: hidden;
     margin-bottom: 20px;
+    position: relative;
 }
-
+.show-key{
+    position: absolute;
+    inset: 0;
+    height: inherit;
+    width: 100%;
+    background: transparent;
+    border: none;
+    opacity: 0;
+    cursor: default;
+}
 .para-container:focus .show-key{
     background: #494a4d;
 }

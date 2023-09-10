@@ -37,14 +37,15 @@ class MyType{
 
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
+        this.showInput = document.querySelector('.show-key')
     }
 
     initialize(){
         this.puttingWord()
+        this.showKeyboard()
         this.selectTime()
         this.startTyping()
         this.restartFunc()
-        
     }
     
     restartFunc(){
@@ -65,7 +66,7 @@ class MyType{
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
 
         this.showResult.closest('.result-container').classList.add('hidden')
-
+        this.showInput.value = ''
         this.result()
         
         this.manageTime(this.countTime)
@@ -188,6 +189,12 @@ class MyType{
         }
     }
 
+    showKeyboard(){
+        this.paraContainer.addEventListener('click',()=>{
+            this.showInput.focus()
+        })
+    }
+    
     startTyping(){
         window.addEventListener('keydown',(e)=>{
             let currentWord = this.word[this.currentWordIndex]

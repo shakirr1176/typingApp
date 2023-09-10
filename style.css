@@ -38,6 +38,10 @@ body{
     margin-bottom: 20px;
 }
 
+.para-container:focus .show-key{
+    background: #494a4d;
+}
+
 .word{
     padding: var(--word-padding);
 }

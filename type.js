@@ -13,8 +13,10 @@ class MyType{
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.isTypingStart = false
-        this.typing = true
 
+        this.isSetInterval = true
+        this.isType = true
+        this.word = null
         this.accuracy = 0;
         this.rightWord = 0
         this.totalLetter = 0
@@ -31,6 +33,7 @@ class MyType{
         this.countTime = this.totalTime
         this.measure = 45
         this.scrollUnit = 0
+        this.myTimer
 
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
@@ -38,39 +41,51 @@ class MyType{
 
     initialize(){
         this.puttingWord()
+        this.selectTime()
         this.startTyping()
         this.restartFunc()
+        
     }
-
+    
     restartFunc(){
-        this.restart.addEventListener('click',()=>{
+        this.restart.addEventListener('click',(e)=>{
             this.declaration()
             this.puttingWord()
-            this.startTyping()
         })
+
+        this.restartAfterWin.addEventListener('click',(e)=>{
+            this.restart.click()
+        })
+
     }
 
     puttingWord(){
 
         this.shuffleArray(this.allText)
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
+
         this.showResult.closest('.result-container').classList.add('hidden')
 
+        this.result()
+        
         this.manageTime(this.countTime)
-        this.selectTime()
-        let word = document.querySelectorAll('.word')
-        this.postionLine(word[this.currentWordIndex].children[this.currentLetterIndex],word[this.currentWordIndex])
+
+        this.word = document.querySelectorAll('.word')
+
+        this.para.style.marginTop = null
+
+        this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+
+        clearInterval(this.myTimer)
 
         window.addEventListener('resize',()=>{
-            this.postionLine(word[this.currentWordIndex].children[this.currentLetterIndex],word[this.currentWordIndex])
-            this.scrollPara(this.paraContainer,word[this.currentWordIndex])
+            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+            this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
         })
         
         window.addEventListener('scroll',()=>{
-            this.postionLine(word[this.currentWordIndex].children[this.currentLetterIndex],word[this.currentWordIndex])
+            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
         })
-
-        
     }
 
     timer(){
@@ -79,12 +94,15 @@ class MyType{
             this.manageTime(this.countTime)
             if(this.countTime == 0){
                 this.isTypingStart = false
+                this.isType = false
+
+                this.showResult.closest('.result-container').classList.remove('hidden')
                 this.result()
-                clearInterval(myTimer)
+                clearInterval(this.myTimer)
             }
         }
 
-        let myTimer =  setInterval(timeDecrase,1000)
+        this.myTimer =  setInterval(timeDecrase,1000)
     }
 
     shuffleArray(array) {
@@ -108,7 +126,6 @@ class MyType{
                     
                     el.classList.add('active')
                     this.prev = el
-             
                     this.totalTime = +el.dataset.time
                     this.countTime = this.totalTime
              
@@ -163,7 +180,7 @@ class MyType{
             this.para.style.marginTop = this.scrollUnit + 'px'
             this.line.style.top = (lineTop - this.measure) + 8 + 'px'
         }
-        console.log(lineTop , paraTop);
+        
         if(lineTop < paraTop){
             this.scrollUnit = this.scrollUnit + this.measure
             this.para.style.marginTop = this.scrollUnit + 'px'
@@ -172,24 +189,21 @@ class MyType{
     }
 
     startTyping(){
-        let word = document.querySelectorAll('.word')
-        addEventListener('keydown',(e)=>{
-            let currentWord = word[this.currentWordIndex]
-            
+        window.addEventListener('keydown',(e)=>{
+            let currentWord = this.word[this.currentWordIndex]
             if( e.code != 'Space' &&
             !this.extraKey.includes(e.key)
-            && e.key.length == 1
+            && e.key.length == 1 && this.isType
             ){
                 this.isTypingStart = true
 
                 if( currentWord &&
                     currentWord.clientWidth < this.para.clientWidth-16 &&
-                    this.extraLetter < 20 &&
-                    this.isTypingStart
+                    this.extraLetter < 20
                   ){
         
                     this.currentLetterIndex++
-                    currentWord = word[this.currentWordIndex]
+                    currentWord = this.word[this.currentWordIndex]
         
                     let currentWordsLetter = currentWord.children[this.currentLetterIndex]
         
@@ -200,24 +214,23 @@ class MyType{
                         span.className = 'wrong extra'
                         span.innerHTML = e.key
                         currentWord.append(span)
-                        this.extraLetter = word[this.currentWordIndex].querySelectorAll('.extra').length
+                        this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
                     }
                     this.isNext = false
                 }
 
-                if(this.isTypingStart && this.typing){
+                if(this.isTypingStart && this.isSetInterval){
                     this.timer()
                 }
     
-                this.typing = false
+                this.isSetInterval = false
             }
         
             if( e.code == 'Space'&&
-                word[this.currentWordIndex+1]&&
-                this.isTypingStart
+                this.word[this.currentWordIndex+1] && this.isType
               ){
                 if(this.isNext == false){
-                    word[this.currentWordIndex].dataset.passedindex = this.currentLetterIndex
+                    this.word[this.currentWordIndex].dataset.passedindex = this.currentLetterIndex
                     this.isNext = true
                     this.currentLetterIndex = -1
                     this.currentWordIndex++
@@ -225,8 +238,7 @@ class MyType{
                 }
             }
         
-            if( e.key == 'Backspace'&&
-                this.isTypingStart
+            if( e.key == 'Backspace' && this.isType
                ){
         
                 if(this.currentLetterIndex > -2){
@@ -235,7 +247,7 @@ class MyType{
                     
                     this.currentLetterIndex--
         
-                    this.extraLetter = word[this.currentWordIndex].querySelectorAll('.extra').length
+                    this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
                     
                     if(currentWordsLetter){
                         if(currentWordsLetter.classList.contains('extra')){
@@ -256,16 +268,16 @@ class MyType{
                         ){
                         if(this.currentWordIndex > 0){
                             this.currentWordIndex--
-                            this.currentLetterIndex = word[this.currentWordIndex].dataset.passedindex
-                            word[this.currentWordIndex].removeAttribute('data-passedindex')
+                            this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                            this.word[this.currentWordIndex].removeAttribute('data-passedindex')
                         }
                     }
                 }
                 
                 if(this.isNext){
                     this.currentWordIndex--
-                    this.currentLetterIndex = word[this.currentWordIndex].dataset.passedindex
-                    word[this.currentWordIndex].removeAttribute('data-passedindex')
+                    this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                    this.word[this.currentWordIndex].removeAttribute('data-passedindex')
                     this.isNext = false
                 }
                 
@@ -274,16 +286,23 @@ class MyType{
                     this.currentWordIndex = 0
                 }
             }
-        
-            this.postionLine(word[this.currentWordIndex].children[this.currentLetterIndex],word[this.currentWordIndex])
-            this.scrollPara(this.paraContainer,word[this.currentWordIndex])
+
+            if((!this.extraKey.includes(e.key) && this.isTypingStart) || e.key == 'Backspace'){
+                this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+                this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
+            }
         })
     }
 
     result(){
-        let word = document.querySelectorAll('.word')
+        
+        if(this.word == null){
+            return
+        }
+
         for (let i = 0; i < this.currentWordIndex+1; i++) {
-          let isAll =   [...word[i].children].every(el=>{
+           
+           let isAll = [...this.word[i].children].every(el=>{
             return el.classList.contains('right')
           })
     
@@ -291,17 +310,14 @@ class MyType{
             this.rightWord++
           }
     
-          this.totalLetter += word[i].children.length
+          this.totalLetter += this.word[i].children.length
         }
-    
-        this.showResult.closest('.result-container').classList.remove('hidden')
+        
         let finalResult = Math.round((this.rightWord/this.totalTime)*60)
-        this.showResult.innerHTML = finalResult
-    
+        
         let rightLetter = this.para.querySelectorAll('.right').length
         this.accuracy = Math.round((rightLetter/this.totalLetter)*100)
-        this.acurracyDiv.innerHTML = this.accuracy + '%'
-    
+        
         switch (true) {
             case finalResult>=30 && finalResult<40:
                 this.skility = 'bellow average'
@@ -330,6 +346,8 @@ class MyType{
         }
     
         this.skill.innerHTML = this.skility
+        this.showResult.innerHTML = finalResult
+        this.acurracyDiv.innerHTML = this.accuracy + '%'
     }
     
 }

@@ -10,9 +10,8 @@ class MyType{
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
         this.isNext = true;
-        this.currentWord = null
-        this.currentLetter = null
-        this.lastWordIndex = 0
+        this.currentWordIndex = 0
+        this.currentLetterIndex = -1
         this.isTypingStart = false
 
         this.isSetInterval = true
@@ -62,33 +61,29 @@ class MyType{
     puttingWord(){
 
         this.shuffleArray(this.allText)
-        this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span class="letter">${x}</span>`).join('')}</span>`).join('')
+        this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
 
-        this.currentWord = document.querySelector('.word')
-
-        this.word = document.querySelectorAll('.word')
-
-        this.currentWord.classList.add('active')
         this.showResult.closest('.result-container').classList.add('hidden')
 
         this.result()
         
         this.manageTime(this.countTime)
 
+        this.word = document.querySelectorAll('.word')
+
         this.para.style.marginTop = null
 
-        this.postionLine(this.currentLetter,this.currentWord)
-
+        this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
 
         clearInterval(this.myTimer)
 
         window.addEventListener('resize',()=>{
-            this.postionLine(this.currentLetter,this.currentWord)
-            this.scrollPara(this.paraContainer,this.currentWord)
+            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+            this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
         })
         
         window.addEventListener('scroll',()=>{
-            this.postionLine(this.currentLetter,this.currentWord)
+            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
         })
     }
 
@@ -162,7 +157,7 @@ class MyType{
     }
 
     postionLine(letter,word){
-        if(!word.querySelector('.active')){
+        if(this.currentLetterIndex == -1){
             if(word){
                 this.line.style.top = word.getBoundingClientRect().top + 8 + 'px'
                 this.line.style.left = word.getBoundingClientRect().left + 6 + 'px'
@@ -179,13 +174,12 @@ class MyType{
     
         let paraTop = paraCon.getBoundingClientRect().top
         let lineTop = wordLine.getBoundingClientRect().top
-
         if(lineTop - paraTop > this.measure){
             this.scrollUnit = this.scrollUnit - this.measure
             this.para.style.marginTop = this.scrollUnit + 'px'
             this.line.style.top = (lineTop - this.measure) + 8 + 'px'
         }
-        console.log(lineTop,paraTop);
+        
         if(lineTop < paraTop){
             this.scrollUnit = this.scrollUnit + this.measure
             this.para.style.marginTop = this.scrollUnit + 'px'
@@ -195,37 +189,31 @@ class MyType{
     
     startTyping(){
         window.addEventListener('keydown',(e)=>{
+            let currentWord = this.word[this.currentWordIndex]
             if( e.code != 'Space' &&
             !this.extraKey.includes(e.key)
             && e.key.length == 1 && this.isType
             ){
                 this.isTypingStart = true
 
-                if( this.para.clientWidth-16 &&
+                if( currentWord &&
+                    currentWord.clientWidth < this.para.clientWidth-16 &&
                     this.extraLetter < 20
                   ){
-
-                    if(!this.currentWord.querySelector('.active')){
-                        this.currentLetter = this.currentWord.querySelector('.letter')
-                        this.currentLetter.classList.add('active')
-                    }else{
-                        this.currentLetter.classList.remove('active')
-                        this.currentLetter = this.currentLetter.nextElementSibling
-                    }
         
-                    if(this.currentLetter){
-
-                        this.currentLetter.classList.add('active')
-                        this.currentLetter.innerText == e.key ? this.currentLetter.classList.add('right') : this.currentLetter.classList.add('wrong')
+                    this.currentLetterIndex++
+                    currentWord = this.word[this.currentWordIndex]
+        
+                    let currentWordsLetter = currentWord.children[this.currentLetterIndex]
+        
+                    if(currentWordsLetter){
+                        currentWordsLetter.innerText == e.key ? currentWordsLetter.classList.add('right') : currentWordsLetter.classList.add('wrong')
                     }else{
-
                         let span = document.createElement('span')
-                        span.classList.add('wrong','extra','active')
+                        span.className = 'wrong extra'
                         span.innerHTML = e.key
-                        this.currentWord.append(span)
-                        this.extraLetter = this.currentWord.querySelectorAll('.extra').length
-
-                        this.currentLetter = span
+                        currentWord.append(span)
+                        this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
                     }
                     this.isNext = false
                 }
@@ -237,84 +225,81 @@ class MyType{
                 this.isSetInterval = false
             }
         
-            if( e.code == 'Space'&& this.currentWord.nextElementSibling && this.isType
+            if( e.code == 'Space'&&
+                this.word[this.currentWordIndex+1] && this.isType
               ){
                 if(this.isNext == false){
-                    this.currentLetter.classList.remove('active')
-                    this.currentWord.classList.remove('active')
-
-                    this.currentWord.dataset.datapassed = [...this.currentWord.children].indexOf(this.currentLetter)
-
-                    this.currentWord = this.currentWord.nextElementSibling
-                    this.currentWord.classList.add('active')
+                    this.word[this.currentWordIndex].dataset.passedindex = this.currentLetterIndex
                     this.isNext = true
+                    this.currentLetterIndex = -1
+                    this.currentWordIndex++
                     this.extraLetter = 0
                 }
             }
         
             if( e.key == 'Backspace' && this.isType
                ){
-                    if(this.currentWord){   
-                        this.extraLetter = this.currentWord.querySelectorAll('.extra').length
-                    }
+        
+                if(this.currentLetterIndex > -2){
+        
+                    let currentWordsLetter = currentWord.children[this.currentLetterIndex]
                     
-                    let currentLetter = this.currentLetter
-
-                    if(this.currentLetter){
-
-                        this.currentLetter = this.currentLetter.previousElementSibling
-
-                        if(this.currentLetter){
-                            this.currentLetter.classList.add('active')
-                        }
-
-                        currentLetter.classList.remove('active')
-
-                        if(currentLetter.classList.contains('extra')){
-                            currentLetter.remove()
+                    this.currentLetterIndex--
+        
+                    this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
+                    
+                    if(currentWordsLetter){
+                        if(currentWordsLetter.classList.contains('extra')){
+                            currentWordsLetter.remove()
                         }
             
-                        if(currentLetter.classList.contains('wrong')){
-                            currentLetter.classList.remove('wrong')
+                        if(currentWordsLetter.classList.contains('wrong')){
+                            currentWordsLetter.classList.remove('wrong')
                         }
             
-                        if(currentLetter.classList.contains('right')){
-                            currentLetter.classList.remove('right')
+                        if(currentWordsLetter.classList.contains('right')){
+                            currentWordsLetter.classList.remove('right')
                         }
-
                     }
-
-                    if(!this.currentLetter && this.currentWord.previousElementSibling){
-                        this.currentWord.classList.remove('active')
-                        this.currentWord = this.currentWord.previousElementSibling
-
-                        this.currentWord.classList.add('active')
-
-                        this.currentLetter = this.currentWord.children[this.currentWord.dataset.datapassed]
-
-                        this.currentLetter.classList.add('active')
+        
+                    if(  this.currentLetterIndex == -2 &&
+                         !this.isNext
+                        ){
+                        if(this.currentWordIndex > 0){
+                            this.currentWordIndex--
+                            this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                            this.word[this.currentWordIndex].removeAttribute('data-passedindex')
+                        }
                     }
+                }
                 
                 if(this.isNext){
-                    // this.currentWordIndex--
-                    // this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
-                    // this.word[this.currentWordIndex].removeAttribute('data-passedindex')
-                    // this.isNext = false
+                    this.currentWordIndex--
+                    this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                    this.word[this.currentWordIndex].removeAttribute('data-passedindex')
+                    this.isNext = false
+                }
+                
+                if(this.currentWordIndex == 0 && this.currentLetterIndex == -2){
+                    this.currentLetterIndex = -1
+                    this.currentWordIndex = 0
                 }
             }
 
             if((!this.extraKey.includes(e.key) && this.isTypingStart) || e.key == 'Backspace'){
-                this.postionLine(this.currentLetter,this.currentWord)
-                this.scrollPara(this.paraContainer,this.currentWord)
+                this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+                this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
             }
         })
     }
 
     result(){
-
-        this.lastWordIndex = [...this.para.children].indexOf(this.currentWord)
         
-        for (let i = 0; i < this.lastWordIndex+1; i++) {
+        if(this.word == null){
+            return
+        }
+
+        for (let i = 0; i < this.currentWordIndex+1; i++) {
            
            let isAll = [...this.word[i].children].every(el=>{
             return el.classList.contains('right')

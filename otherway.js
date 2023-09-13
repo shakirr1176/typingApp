@@ -14,7 +14,7 @@ class MyType{
         this.currentLetter = null
         this.lastWordIndex = 0
         this.isTypingStart = false
-
+        this.isBack = false
         this.isSetInterval = true
         this.isType = true
         this.word = null
@@ -35,7 +35,6 @@ class MyType{
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
-
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
     }
@@ -63,30 +62,22 @@ class MyType{
 
         this.shuffleArray(this.allText)
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span class="letter">${x}</span>`).join('')}</span>`).join('')
-
         this.currentWord = document.querySelector('.word')
-
+        this.result()
         this.word = document.querySelectorAll('.word')
-
+        this.line.classList.add('line-animation')
         this.currentWord.classList.add('active')
         this.showResult.closest('.result-container').classList.add('hidden')
-
-        this.result()
-        
         this.manageTime(this.countTime)
-
         this.para.style.marginTop = null
-
         this.postionLine(this.currentLetter,this.currentWord)
-
-
         clearInterval(this.myTimer)
 
         window.addEventListener('resize',()=>{
             this.postionLine(this.currentLetter,this.currentWord)
             this.scrollPara(this.paraContainer,this.currentWord)
         })
-        
+
         window.addEventListener('scroll',()=>{
             this.postionLine(this.currentLetter,this.currentWord)
         })
@@ -99,7 +90,6 @@ class MyType{
             if(this.countTime == 0){
                 this.isTypingStart = false
                 this.isType = false
-
                 this.showResult.closest('.result-container').classList.remove('hidden')
                 this.result()
                 clearInterval(this.myTimer)
@@ -132,7 +122,6 @@ class MyType{
                     this.prev = el
                     this.totalTime = +el.dataset.time
                     this.countTime = this.totalTime
-             
                     this.manageTime(this.totalTime)
                 }
             })
@@ -185,7 +174,7 @@ class MyType{
             this.para.style.marginTop = this.scrollUnit + 'px'
             this.line.style.top = (lineTop - this.measure) + 8 + 'px'
         }
-        console.log(lineTop,paraTop);
+
         if(lineTop < paraTop){
             this.scrollUnit = this.scrollUnit + this.measure
             this.para.style.marginTop = this.scrollUnit + 'px'
@@ -199,9 +188,11 @@ class MyType{
             !this.extraKey.includes(e.key)
             && e.key.length == 1 && this.isType
             ){
+                this.line.classList.remove('line-animation')
                 this.isTypingStart = true
 
-                if( this.para.clientWidth-16 &&
+                if( this.currentWord &&
+                    this.currentWord.clientWidth < this.para.clientWidth-16 &&
                     this.extraLetter < 20
                   ){
 
@@ -214,11 +205,9 @@ class MyType{
                     }
         
                     if(this.currentLetter){
-
                         this.currentLetter.classList.add('active')
                         this.currentLetter.innerText == e.key ? this.currentLetter.classList.add('right') : this.currentLetter.classList.add('wrong')
                     }else{
-
                         let span = document.createElement('span')
                         span.classList.add('wrong','extra','active')
                         span.innerHTML = e.key
@@ -242,9 +231,7 @@ class MyType{
                 if(this.isNext == false){
                     this.currentLetter.classList.remove('active')
                     this.currentWord.classList.remove('active')
-
                     this.currentWord.dataset.datapassed = [...this.currentWord.children].indexOf(this.currentLetter)
-
                     this.currentWord = this.currentWord.nextElementSibling
                     this.currentWord.classList.add('active')
                     this.isNext = true
@@ -258,9 +245,16 @@ class MyType{
                         this.extraLetter = this.currentWord.querySelectorAll('.extra').length
                     }
                     
+                    if(!this.currentLetter &&
+                        !this.currentWord.querySelector('.active') &&
+                        !document.querySelectorAll('.word')[0].classList.contains('active')
+                        ){
+                        this.isBack = true
+                    }
+
                     let currentLetter = this.currentLetter
 
-                    if(this.currentLetter){
+                    if(this.currentLetter && !this.isNext){
 
                         this.currentLetter = this.currentLetter.previousElementSibling
 
@@ -281,26 +275,27 @@ class MyType{
                         if(currentLetter.classList.contains('right')){
                             currentLetter.classList.remove('right')
                         }
-
+                        
                     }
-
-                    if(!this.currentLetter && this.currentWord.previousElementSibling){
+                    
+                    let nextWordShift = ()=>{
                         this.currentWord.classList.remove('active')
+                        this.currentWord.removeAttribute('data-datapassed')
                         this.currentWord = this.currentWord.previousElementSibling
-
                         this.currentWord.classList.add('active')
-
                         this.currentLetter = this.currentWord.children[this.currentWord.dataset.datapassed]
-
                         this.currentLetter.classList.add('active')
                     }
-                
-                if(this.isNext){
-                    // this.currentWordIndex--
-                    // this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
-                    // this.word[this.currentWordIndex].removeAttribute('data-passedindex')
-                    // this.isNext = false
-                }
+
+                    if(this.isBack == true && !this.isNext){
+                        this.isBack = false
+                        nextWordShift()
+                    }
+
+                    if(this.isNext && !document.querySelectorAll('.word')[0].classList.contains('active')){
+                        this.isNext = false
+                        nextWordShift()
+                    }
             }
 
             if((!this.extraKey.includes(e.key) && this.isTypingStart) || e.key == 'Backspace'){
@@ -311,6 +306,10 @@ class MyType{
     }
 
     result(){
+
+        if(this.word == null){
+            return
+        }
 
         this.lastWordIndex = [...this.para.children].indexOf(this.currentWord)
         
@@ -326,9 +325,9 @@ class MyType{
     
           this.totalLetter += this.word[i].children.length
         }
-        
+
         let finalResult = Math.round((this.rightWord/this.totalTime)*60)
-        
+
         let rightLetter = this.para.querySelectorAll('.right').length
         this.accuracy = Math.round((rightLetter/this.totalLetter)*100)
         
@@ -363,7 +362,6 @@ class MyType{
         this.showResult.innerHTML = finalResult
         this.acurracyDiv.innerHTML = this.accuracy + '%'
     }
-    
 }
 
 let myType = new MyType()

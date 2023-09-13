@@ -13,7 +13,6 @@ class MyType{
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.isTypingStart = false
-
         this.isSetInterval = true
         this.isType = true
         this.word = null
@@ -34,7 +33,6 @@ class MyType{
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
-
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
     }
@@ -62,19 +60,13 @@ class MyType{
 
         this.shuffleArray(this.allText)
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
-
         this.showResult.closest('.result-container').classList.add('hidden')
-
+        this.line.classList.add('line-animation')
         this.result()
-        
         this.manageTime(this.countTime)
-
         this.word = document.querySelectorAll('.word')
-
         this.para.style.marginTop = null
-
         this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
-
         clearInterval(this.myTimer)
 
         window.addEventListener('resize',()=>{
@@ -94,7 +86,6 @@ class MyType{
             if(this.countTime == 0){
                 this.isTypingStart = false
                 this.isType = false
-
                 this.showResult.closest('.result-container').classList.remove('hidden')
                 this.result()
                 clearInterval(this.myTimer)
@@ -127,7 +118,6 @@ class MyType{
                     this.prev = el
                     this.totalTime = +el.dataset.time
                     this.countTime = this.totalTime
-             
                     this.manageTime(this.totalTime)
                 }
             })
@@ -194,6 +184,7 @@ class MyType{
             !this.extraKey.includes(e.key)
             && e.key.length == 1 && this.isType
             ){
+                this.line.classList.remove('line-animation')
                 this.isTypingStart = true
 
                 if( currentWord &&
@@ -203,7 +194,7 @@ class MyType{
         
                     this.currentLetterIndex++
                     currentWord = this.word[this.currentWordIndex]
-        
+
                     let currentWordsLetter = currentWord.children[this.currentLetterIndex]
         
                     if(currentWordsLetter){
@@ -245,7 +236,6 @@ class MyType{
                     let currentWordsLetter = currentWord.children[this.currentLetterIndex]
                     
                     this.currentLetterIndex--
-        
                     this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
                     
                     if(currentWordsLetter){
@@ -347,8 +337,7 @@ class MyType{
         this.skill.innerHTML = this.skility
         this.showResult.innerHTML = finalResult
         this.acurracyDiv.innerHTML = this.accuracy + '%'
-    }
-    
+    }   
 }
 
 let myType = new MyType()

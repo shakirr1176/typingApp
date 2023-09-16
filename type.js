@@ -220,6 +220,14 @@ class MyType{
                 this.word[this.currentWordIndex+1] && this.isType
               ){
                 if(this.isNext == false){
+                    if(this.word[this.currentWordIndex]){
+                        if([...this.word[this.currentWordIndex].children].every(el=>el.classList.contains('right'))){
+                            this.word[this.currentWordIndex].classList.add('correct-word')
+                        }else{
+                            this.word[this.currentWordIndex].classList.add('wrong-word')
+                        }
+                    }
+
                     this.word[this.currentWordIndex].dataset.passedindex = this.currentLetterIndex
                     this.isNext = true
                     this.currentLetterIndex = -1
@@ -274,6 +282,10 @@ class MyType{
                     this.currentLetterIndex = -1
                     this.currentWordIndex = 0
                 }
+
+                if(this.word[this.currentWordIndex]){
+                    this.word[this.currentWordIndex].classList.remove('correct-word','wrong-word')
+                }
             }
 
             if((!this.extraKey.includes(e.key) && this.isTypingStart) || e.key == 'Backspace'){
@@ -289,16 +301,9 @@ class MyType{
             return
         }
 
+        this.rightWord = document.querySelectorAll('.correct-word').length
+        
         for (let i = 0; i < this.currentWordIndex+1; i++) {
-           
-           let isAll = [...this.word[i].children].every(el=>{
-            return el.classList.contains('right')
-          })
-    
-          if(isAll){
-            this.rightWord++
-          }
-    
           this.totalLetter += this.word[i].children.length
         }
         

@@ -1,7 +1,7 @@
 class MyType{
     constructor(){
         this.declaration()
-        this.initialize()
+        this.draw()
     }
 
     declaration(){
@@ -37,10 +37,15 @@ class MyType{
         this.myTimer
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
+        this.typeInput = document.querySelector('.type-input')
+
+        this.total_typed_word = document.querySelector('.total-typed-word')
+        this.right_word = document.querySelector('.right-word-show')
+        this.wrong_word = document.querySelector('.wrong-word-show')
     }
 
-    initialize(){
-        this.puttingWord()
+    draw(){
+        this.initialize()
         this.selectTime()
         this.startTyping()
         this.restartFunc()
@@ -49,7 +54,7 @@ class MyType{
     restartFunc(){
         this.restart.addEventListener('click',(e)=>{
             this.declaration()
-            this.puttingWord()
+            this.initialize()
         })
 
         this.restartAfterWin.addEventListener('click',(e)=>{
@@ -58,14 +63,21 @@ class MyType{
 
     }
 
-    puttingWord(){
+    initialize(){
 
         this.shuffleArray(this.allText)
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span class="letter">${x}</span>`).join('')}</span>`).join('')
         this.currentWord = document.querySelector('.word')
+
+        this.total_typed_word.innerHTML = 0
+        this.right_word.innerHTML = 0
+        this.wrong_word.innerHTML = 0
+
         this.result()
         this.word = document.querySelectorAll('.word')
         this.line.classList.add('line-animation')
+        this.typeInput.value = ''
+
         this.currentWord.classList.add('active')
         this.showResult.closest('.result-container').classList.add('hidden')
         this.manageTime(this.countTime)
@@ -190,6 +202,7 @@ class MyType{
             ){
                 this.line.classList.remove('line-animation')
                 this.isTypingStart = true
+                this.typeInput.focus()
 
                 if( this.currentWord &&
                     this.currentWord.clientWidth < this.para.clientWidth-16 &&
@@ -228,7 +241,18 @@ class MyType{
         
             if( e.code == 'Space'&& this.currentWord.nextElementSibling && this.isType
               ){
-                if(this.isNext == false){
+                if(
+                    this.currentWord && 
+                    (this.currentWord.firstChild.classList.contains('wrong') ||
+                     this.currentWord.firstChild.classList.contains('right')
+                    )
+                ){
+                    if([...this.currentWord.children].every(el=>el.classList.contains('right'))){
+                        this.currentWord.classList.add('correct-word')
+                    }else{
+                        this.currentWord.classList.add('wrong-word')
+                    }
+
                     this.currentLetter.classList.remove('active')
                     this.currentWord.classList.remove('active')
                     this.currentWord.dataset.datapassed = [...this.currentWord.children].indexOf(this.currentLetter)
@@ -296,6 +320,10 @@ class MyType{
                         this.isNext = false
                         nextWordShift()
                     }
+
+                    if(this.currentWord){
+                        this.currentWord.classList.remove('correct-word','wrong-word')
+                    }
             }
 
             if((!this.extraKey.includes(e.key) && this.isTypingStart) || e.key == 'Backspace'){
@@ -312,24 +340,39 @@ class MyType{
         }
 
         this.lastWordIndex = [...this.para.children].indexOf(this.currentWord)
+
+        this.rightWord = document.querySelectorAll('.correct-word').length
+
+        if(
+            !this.word[this.lastWordIndex].firstChild.classList.contains('right') &&
+            !this.word[this.lastWordIndex].firstChild.classList.contains('wrong')
+        ){
+            this.lastWordIndex = this.lastWordIndex - 1
+        }
+
+        this.total_typed_word.innerHTML = this.lastWordIndex+1
+        this.right_word.innerHTML = this.rightWord
+        this.wrong_word.innerHTML = this.lastWordIndex+1 - this.rightWord
         
         for (let i = 0; i < this.lastWordIndex+1; i++) {
-           
-           let isAll = [...this.word[i].children].every(el=>{
-            return el.classList.contains('right')
-          })
-    
-          if(isAll){
-            this.rightWord++
-          }
-    
           this.totalLetter += this.word[i].children.length
+        }
+
+
+        if(this.word[this.lastWordIndex]){
+            for (let i = 0; i < this.word[this.lastWordIndex].children.length; i++) {
+                let letter = this.word[this.lastWordIndex].children[i]
+                if(letter.className == 'letter'){
+                    this.totalLetter--
+                }
+            }
         }
 
         let finalResult = Math.round((this.rightWord/this.totalTime)*60)
 
         let rightLetter = this.para.querySelectorAll('.right').length
-        this.accuracy = Math.round((rightLetter/this.totalLetter)*100)
+
+        this.accuracy = this.totalLetter==0 ? 0 : Math.round((rightLetter/this.totalLetter)*100)
         
         switch (true) {
             case finalResult>=30 && finalResult<40:

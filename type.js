@@ -320,14 +320,18 @@ class MyType{
             return
         }
 
-        this.rightWord = document.querySelectorAll('.correct-word').length
-
         if(
             !this.word[this.currentWordIndex].firstChild.classList.contains('right') &&
             !this.word[this.currentWordIndex].firstChild.classList.contains('wrong')
         ){
             this.currentWordIndex = this.currentWordIndex - 1
+        }else{
+            if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
+                this.word[this.currentWordIndex].classList.add('correct-word')
+            }
         }
+
+        this.rightWord = document.querySelectorAll('.correct-word').length
         
         for (let i = 0; i < this.currentWordIndex+1; i++) {
             this.totalLetter += this.word[i].children.length

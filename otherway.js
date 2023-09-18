@@ -341,15 +341,19 @@ class MyType{
 
         this.lastWordIndex = [...this.para.children].indexOf(this.currentWord)
 
-        this.rightWord = document.querySelectorAll('.correct-word').length
-
         if(
             !this.word[this.lastWordIndex].firstChild.classList.contains('right') &&
             !this.word[this.lastWordIndex].firstChild.classList.contains('wrong')
-        ){
-            this.lastWordIndex = this.lastWordIndex - 1
-        }
+            ){
+                this.lastWordIndex = this.lastWordIndex - 1
+            }else{
+                if([...this.word[this.lastWordIndex].children].every(el => el.classList.contains('right'))){
+                    this.word[this.lastWordIndex].classList.add('correct-word')
+                }
+            }
 
+        this.rightWord = document.querySelectorAll('.correct-word').length
+            
         this.total_typed_word.innerHTML = this.lastWordIndex+1
         this.right_word.innerHTML = this.rightWord
         this.wrong_word.innerHTML = this.lastWordIndex+1 - this.rightWord

@@ -6,6 +6,7 @@ class MyType{
 
     declaration(){
         this.allText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/ans/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
+
         this.para = document.querySelector('.para')
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
@@ -33,6 +34,8 @@ class MyType{
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
+        this.rankArray = []
+        this.finalResult = 0
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
         this.typeInput = document.querySelector('.type-input')
@@ -40,6 +43,7 @@ class MyType{
         this.total_typed_word = document.querySelector('.total-typed-word')
         this.right_word = document.querySelector('.right-word-show')
         this.wrong_word = document.querySelector('.wrong-word-show')
+        this.nameInput = document.querySelector('.name-input')
     }
 
     draw(){
@@ -56,13 +60,13 @@ class MyType{
         })
 
         this.restartAfterWin.addEventListener('click',(e)=>{
+            this.rankFun()
             this.restart.click()
         })
 
     }
 
     initialize(){
-
         this.shuffleArray(this.allText)
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
         this.showResult.closest('.result-container').classList.add('hidden')
@@ -72,7 +76,9 @@ class MyType{
         this.total_typed_word.innerHTML = 0
         this.right_word.innerHTML = 0
         this.wrong_word.innerHTML = 0
+        this.nameInput.value = ''
 
+        this.rankArray = JSON.parse(localStorage.getItem('rank')) || []
         this.result()
 
         this.manageTime(this.countTime)
@@ -89,6 +95,35 @@ class MyType{
         window.addEventListener('scroll',()=>{
             this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
         })
+    }
+
+    rankFun(){
+        if(!this.isType){
+            if(this.nameInput.value.trim() !== ''){
+
+                let currentObj = {
+                    name: this.nameInput.value,
+                    wpm: this.finalResult,
+                    accuracy: this.accuracy
+                }
+
+               if(this.rankArray){
+                    let hasAlready = this.rankArray.find(o=>o.name == currentObj.name)
+                    if(hasAlready == undefined){
+                        this.rankArray.push(currentObj)
+                    }else{ 
+                        if(currentObj.wpm > hasAlready.wpm){
+                            const i = this.rankArray.findIndex(x => x.name === hasAlready.name)
+                            this.rankArray[i] = currentObj
+                        }
+                    }
+                }else{
+                    this.rankArray.push(currentObj)
+                }
+                
+                localStorage.setItem('rank',JSON.stringify(this.rankArray))
+            }
+        }
     }
 
     timer(){
@@ -351,32 +386,32 @@ class MyType{
         this.right_word.innerHTML = this.rightWord
         this.wrong_word.innerHTML = this.currentWordIndex+1 - this.rightWord
         
-        let finalResult = Math.round((this.rightWord/this.totalTime)*60)
+        this.finalResult = Math.round((this.rightWord/this.totalTime)*60)
         
         let rightLetter = this.para.querySelectorAll('.right').length
 
         this.accuracy = this.totalLetter==0 ? 0 : Math.round((rightLetter/this.totalLetter)*100)
         
         switch (true) {
-            case finalResult>=30 && finalResult<40:
+            case this.finalResult>=30 && this.finalResult<40:
                 this.skility = 'bellow average'
                 break;
-            case finalResult>=40 && finalResult<50:
+            case this.finalResult>=40 && this.finalResult<50:
                 this.skility = 'average'
                 break;
-            case finalResult>=50 && finalResult<60:
+            case this.finalResult>=50 && this.finalResult<60:
                 this.skility = 'semi pro'
                 break;
-            case finalResult>=70 && finalResult<80:
+            case this.finalResult>=70 && this.finalResult<80:
                 this.skility = 'professional'
                 break;
-            case finalResult>=80 && finalResult<100:
+            case this.finalResult>=80 && this.finalResult<100:
                 this.skility = 'type master'
                 break;
-            case finalResult>=100 && finalResult<200:
+            case this.finalResult>=100 && this.finalResult<200:
                 this.skility = 'comepetitive'
                 break;
-            case finalResult>=200:
+            case this.finalResult>=200:
                 this.skility = 'hacker'
                 break;
             default:
@@ -385,7 +420,7 @@ class MyType{
         }
     
         this.skill.innerHTML = this.skility
-        this.showResult.innerHTML = finalResult
+        this.showResult.innerHTML = this.finalResult
         this.acurracyDiv.innerHTML = this.accuracy + '%'
     }   
 }

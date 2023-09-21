@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shakir type</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html">Go to test</a>
+        </div>
+        <div class="main">
+            <h1 class="rank-title">All-Time English Leaderboards</h1>
+            <div class="rank-time">
+                Time
+                <span>15</span>
+            </div>
+            <div class="table-div">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>wpm</th>
+                            <th>accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        let rankArray = JSON.parse(localStorage.getItem('rank'))
+        let tbody = document.querySelector('tbody')
+
+        if(rankArray){
+            rankArray.sort((b, a) => {
+                return a.wpm - b.wpm;
+            });
+            
+            tbody.innerHTML = ''
+            rankArray.forEach((el,i)=>{
+                let tr = document.createElement('tr')
+                tr.innerHTML =  `<td>${i+1}</td>
+                                <td>${el.name}</td>
+                                <td>${el.wpm}</td>
+                                <td>${el.accuracy}%</td>`
+                tbody.append(tr)
+            })
+        }else{
+            tbody.innerHTML = '<td colspan="4" class="no-data">No Data</td>'   
+        }
+
+    </script>
+</body>
+</html>

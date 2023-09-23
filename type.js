@@ -28,13 +28,21 @@ class MyType{
         this.acurracyDiv = document.querySelector('.acurracy')
         this.skill = document.querySelector('.skill')
         this.timeOption = document.querySelectorAll('.times')
-        this.prev = [...this.timeOption].filter(el=> el.classList.contains('active'))[0]
+        this.prev = localStorage.getItem('time') ? [...this.timeOption].filter(el=> el.dataset.time == localStorage.getItem('time'))[0] : this.timeOption[1]
         this.totalTime = +this.prev.dataset.time
         this.countTime = this.totalTime
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
-        this.rankArray = []
+
+        this.fiveSecRankArray = []
+        this.fifteenSecRankArray = []
+        this.thirtySecRankArray = []
+        this.sixtySecRankArray = []
+        this.threeHunSecRankArray = []
+        this.sixHunSecRankArray = []
+        this.eighteenHunSecRankArray = []
+
         this.finalResult = 0
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
@@ -72,13 +80,20 @@ class MyType{
         this.showResult.closest('.result-container').classList.add('hidden')
         this.line.classList.add('line-animation')
         this.typeInput.value = ''
-
         this.total_typed_word.innerHTML = 0
         this.right_word.innerHTML = 0
         this.wrong_word.innerHTML = 0
         this.nameInput.value = ''
+        this.prev.classList.add('active')
 
-        this.rankArray = JSON.parse(localStorage.getItem('rank')) || []
+        this.fiveSecRankArray = JSON.parse(localStorage.getItem('fiveSecRank')) || []
+        this.fifteenSecRankArray = JSON.parse(localStorage.getItem('fifteenSecRank')) || []
+        this.thirtySecRankArray = JSON.parse(localStorage.getItem('thirtySecRank')) || []
+        this.sixtySecRankArray = JSON.parse(localStorage.getItem('sixtySecRank')) || []
+        this.threeHunSecRankArray = JSON.parse(localStorage.getItem('threeHunSecRank')) || []
+        this.sixHunSecRankArray = JSON.parse(localStorage.getItem('sixHunSecRank')) || []
+        this.eighteenHunSecRankArray = JSON.parse(localStorage.getItem('eighteenHunSecRank')) || []
+
         this.result()
 
         this.manageTime(this.countTime)
@@ -101,30 +116,58 @@ class MyType{
         if(!this.isType){
             if(this.nameInput.value.trim() !== ''){
 
-                let currentObj = {
-                    name: this.nameInput.value,
-                    wpm: this.finalResult,
-                    accuracy: this.accuracy
+                switch (this.prev.dataset.time) {
+                    case '5':
+                        this.specificTimeFunc(this.fiveSecRankArray,'fiveSecRank')
+                        break;
+                    case '30':
+                        this.specificTimeFunc(this.thirtySecRankArray,'thirtySecRank')
+                        break;
+                    case '60':
+                        this.specificTimeFunc(this.sixtySecRankArray,'sixtySecRank')
+                        break;
+                    case '300':
+                        this.specificTimeFunc(this.threeHunSecRankArray,'threeHunSecRank')
+                        break;
+                    case '600':
+                        this.specificTimeFunc(this.sixHunSecRankArray,'sixHunSecRank')
+                        break;
+                    case '1800':
+                        this.specificTimeFunc(this.eighteenHunSecRankArray,'eighteenHunSecRank')
+                        break;
+                    default:
+                        this.specificTimeFunc(this.fifteenSecRankArray,'fifteenSecRank')
+                        break;
                 }
-
-               if(this.rankArray){
-                    let hasAlready = this.rankArray.find(o=>o.name == currentObj.name)
-                    if(hasAlready == undefined){
-                        this.rankArray.push(currentObj)
-                    }else{ 
-                        if(currentObj.wpm > hasAlready.wpm){
-                            const i = this.rankArray.findIndex(x => x.name === hasAlready.name)
-                            this.rankArray[i] = currentObj
-                        }
-                    }
-                }else{
-                    this.rankArray.push(currentObj)
-                }
-                
-                localStorage.setItem('rank',JSON.stringify(this.rankArray))
             }
         }
     }
+
+    specificTimeFunc = (rankArray,rank)=>{
+
+        let currentObj = {
+            id: rankArray.length+1,
+            name: this.nameInput.value,
+            wpm: this.finalResult,
+            accuracy: this.accuracy
+        }
+
+        if(rankArray){
+            let hasAlready = rankArray.find(o=>o.name.trim('') == currentObj.name.trim())
+            if(hasAlready == undefined){
+                rankArray.push(currentObj)
+            }else{ 
+                if(currentObj.wpm > hasAlready.wpm){
+                    const i = rankArray.findIndex(x => x.name.trim('') === hasAlready.name.trim(''))
+                    rankArray[i] = currentObj
+                }
+            }
+        }else{
+            rankArray.push(currentObj)
+        }
+
+        localStorage.setItem(rank,JSON.stringify(rankArray))
+    } 
 
     timer(){
         let timeDecrase = ()=>{
@@ -162,6 +205,8 @@ class MyType{
                     }
                     
                     el.classList.add('active')
+
+                    localStorage.setItem('time',el.dataset.time)
                     this.prev = el
                     this.totalTime = +el.dataset.time
                     this.countTime = this.totalTime

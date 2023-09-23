@@ -304,3 +304,14 @@ tbody tr:nth-child(2n+1){
     text-align: center;
     color: #494a4d;
 }
+
+.delete-btn{
+    width: 20px;
+    cursor: pointer;
+}
+.delete-btn > svg{
+    width: 100%;
+}
+.text-center{
+    text-align: center;
+}

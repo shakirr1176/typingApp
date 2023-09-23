@@ -306,8 +306,11 @@ tbody tr:nth-child(2n+1){
 }
 
 .delete-btn{
-    width: 20px;
+    width: 17px;
     cursor: pointer;
+    background: none;
+    color: white;
+    border: none;
 }
 .delete-btn > svg{
     width: 100%;

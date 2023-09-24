@@ -39,6 +39,7 @@ class MyType{
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
+        this.forAfterRestart
 
 
         this.finalResult = 0
@@ -53,6 +54,8 @@ class MyType{
     }
 
     draw(){
+        this.shuffleArray(this.allText)
+        this.forAfterRestart = this.allText
         this.initialize()
         this.selectTime()
         this.startTyping()
@@ -62,18 +65,35 @@ class MyType{
     restartFunc(){
         this.restart.addEventListener('click',(e)=>{
             this.declaration()
+            this.shuffleArray(this.allText)
+            this.forAfterRestart = this.allText
             this.initialize()
         })
 
         this.restartAfterWin.addEventListener('click',(e)=>{
-            this.rankFun()
-            this.restart.click()
+            if(this.countTime === 0){
+                this.rankFun()
+                this.declaration()
+                this.allText = this.forAfterRestart ? this.forAfterRestart : this.allText
+                this.initialize()
+            }
         })
 
+        this.nameInput.addEventListener('keypress',(e)=>{
+            if(e.key == 'Enter' && this.nameInput.value.trim() !=  ''){
+                this.restartAfterWin.click()
+            }
+        })
+
+        window.addEventListener('keydown',(e)=>{
+            if(e.key == 'Shift'){
+                this.restart.click()
+            }
+        })
     }
 
+
     initialize(){
-        this.shuffleArray(this.allText)
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
         this.showResult.closest('.result-container').classList.add('hidden')
         this.line.classList.add('line-animation')
@@ -141,7 +161,6 @@ class MyType{
         }else{
             rankArray.push(currentObj)
         }
-
         localStorage.setItem(rank,JSON.stringify(rankArray))
     } 
 
@@ -179,9 +198,7 @@ class MyType{
                     if(this.prev){
                      this.prev.classList.remove('active')
                     }
-                    
                     el.classList.add('active')
-
                     localStorage.setItem('time',el.dataset.time)
                     this.prev = el
                     this.totalTime = +el.dataset.time

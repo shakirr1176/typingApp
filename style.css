@@ -88,6 +88,10 @@ a{
     transition: all 300ms linear;
     display: inline-block;
 }
+.restart-after-win{
+    background:  #35383b;
+    color: rgba(255, 255, 255, 0.63);
+}
 
 .restart-after-win:hover,.restart:hover{
     background: #404144;
@@ -243,11 +247,11 @@ textarea{
 
 .more-details{
     background:  #2c2e31;
+    color: rgba(255, 255, 255, 0.63);
     padding: 10px 16px;
     display: inline-flex;
     list-style: none;
     border-radius: 5px;
-    color: rgba(255, 255, 255, 0.63);
     gap: 30px;
 }
 

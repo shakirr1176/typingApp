@@ -36,7 +36,7 @@ export let timeMange = [
     },
 ]
 
-let table = `<div>
+let table = `<div class="table-container">
                 <table cellspacing="0" cellpadding="0">
                     <thead>
                         <tr>

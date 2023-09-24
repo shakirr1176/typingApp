@@ -29,8 +29,14 @@ function allTableSet(tableDiv,rank){
     let tbody = tableDiv.querySelector('tbody')
     function setTableData(){
         if(rankArray && rankArray.length != 0){
-            rankArray.sort((b, a) => {
-                return a.wpm - b.wpm;
+            rankArray.sort((y, x) => {
+                if(x.wpm > y.wpm){
+                    return x.wpm - y.wpm
+                }
+                if(x.wpm == y.wpm){
+                    return x.accuracy - y.accuracy
+                }
+                return 0
             });
             tbody.innerHTML = ''
             rankArray.forEach((el,i)=>{
@@ -96,7 +102,7 @@ function allTableSet(tableDiv,rank){
         selectedRow = e
         confirmDelete.classList.remove('hide')
         let i = rankArray.findIndex(x=> x.id == selectedRow.closest('tr').id)
-        userName.innerHTML = "Delete " + rankArray[i].name + '-' + rankArray[i].wpm + 'wpm'
+        userName.innerHTML = "Delete " + rankArray[i].name + '-' + rankArray[i].wpm + 'wpm' + '?'
     }
     
     function closeModal(){

@@ -7,7 +7,6 @@ class MyType{
 
     declaration(){
         this.allText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/and/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
-
         this.para = document.querySelector('.para')
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
@@ -30,23 +29,18 @@ class MyType{
         this.skill = document.querySelector('.skill')
         this.manageTime = manageTime
         this.rankArray = timeMange
-        
         this.timeOption = document.querySelectorAll('.times')
         this.prev = localStorage.getItem('time')  && this.rankArray.some(el=>el.time == localStorage.getItem('time') ) ? [...this.timeOption].filter(el=> el.dataset.time == localStorage.getItem('time'))[0] : this.timeOption[1]
-        
         this.totalTime = +this.prev.dataset.time
         this.countTime = this.totalTime
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
         this.forAfterRestart
-
-
         this.finalResult = 0
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
         this.typeInput = document.querySelector('.type-input')
-
         this.total_typed_word = document.querySelector('.total-typed-word')
         this.right_word = document.querySelector('.right-word-show')
         this.wrong_word = document.querySelector('.wrong-word-show')
@@ -153,7 +147,8 @@ class MyType{
             if(hasAlready == undefined){
                 rankArray.push(currentObj)
             }else{ 
-                if(currentObj.wpm > hasAlready.wpm){
+                if((currentObj.wpm > hasAlready.wpm) || (currentObj.wpm == hasAlready.wpm && hasAlready.accuracy < currentObj.accuracy)){
+                    console.log(hasAlready);
                     const i = rankArray.findIndex(x => x.name.trim('') === hasAlready.name.trim(''))
                     rankArray[i] = currentObj
                 }
@@ -162,7 +157,7 @@ class MyType{
             rankArray.push(currentObj)
         }
         localStorage.setItem(rank,JSON.stringify(rankArray))
-    } 
+    }
 
     timer(){
         let timeDecrase = ()=>{

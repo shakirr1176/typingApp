@@ -69,7 +69,7 @@ function allTableSet(tableDiv,rank){
 
     function deleteRow(){
         let i = rankArray.findIndex(x=> x.id == selectedRow.closest('tr').id)
-        if(confirmInput.value.toLocaleLowerCase() == rankArray[i].name.toLocaleLowerCase()){
+        if(confirmInput.value.trim().toLocaleLowerCase() == rankArray[i].name.trim().toLocaleLowerCase()){
             selectedRow.closest('tr').remove()
             rankArray.splice(i,1)
             localStorage.setItem(rank,JSON.stringify(rankArray))

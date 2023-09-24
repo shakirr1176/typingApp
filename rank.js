@@ -3,9 +3,12 @@ import {data,timeMange} from './data.js'
 let allTemplate = data
 
 let tableMain = document.querySelector('#table-main')
-
-
-
+let confirmDelete = document.querySelector('.confirm-delete')
+let cancelBtn = document.querySelector('.cancel-btn')
+let confirmDeleteBtn = document.querySelector('.confirm-delete-btn')
+let confirmInput = confirmDelete.querySelector('input')
+let errorMsg = document.querySelector('.error-msg')
+let userName = document.querySelector('.user-name')
 try {
     tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time == localStorage.getItem('time')) ? allTemplate.find(x=> x.id == localStorage.getItem('time')).template : allTemplate[1].template
 
@@ -35,9 +38,11 @@ function allTableSet(tableDiv,rank){
                 el.id = i
                 tr.id = i 
                 tr.innerHTML =  `<td>${i+1}</td>
-                                <td>${el.name}</td>
-                                <td>${el.wpm}</td>
-                                <td>${el.accuracy}%</td>
+                                <td class="td-max">${el.name ? el.name : ''}</td>
+                                <td>${el.wpm || el.wpm == 0 ? el.wpm : ''}</td>
+                                <td>${el.accuracy || el.accuracy == 0 ? el.accuracy : ''}%</td>
+                                <td>${el.rightWord || el.rightWord == 0 ? el.rightWord : ''}</td>
+                                <td>${el.wrongWord || el.wrongWord == 0 ? el.wrongWord : ''}</td>
                                 <td class="text-center">
                                     <button class="delete-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -48,19 +53,61 @@ function allTableSet(tableDiv,rank){
                 tbody.append(tr)
             })
         }else{
-            tbody.innerHTML = '<td colspan="5" class="no-data">No Data</td>'   
+            tbody.innerHTML = '<td colspan="10" class="no-data">No Data</td>'   
         }
     }
 
     setTableData()
 
+    let selectedRow
+
     tableDiv.addEventListener('click',(e)=>{
         if(e.target.closest('.delete-btn')){
-            e.target.closest('tr').remove()
-            let i = rankArray.findIndex(x=> x.id == e.target.closest('tr').id)
+            openModal(e.target)
+        }
+    })
+
+    function deleteRow(){
+        let i = rankArray.findIndex(x=> x.id == selectedRow.closest('tr').id)
+        if(confirmInput.value.toLocaleLowerCase() == rankArray[i].name.toLocaleLowerCase()){
+            selectedRow.closest('tr').remove()
             rankArray.splice(i,1)
             localStorage.setItem(rank,JSON.stringify(rankArray))
+
             setTableData()
+
+            closeModal()
+        }else{
+            errorMsg.classList.remove('hide')
         }
+    }
+
+    confirmDeleteBtn.addEventListener('click',()=>{
+        deleteRow()
+    })
+    
+    confirmInput.addEventListener('keypress',(e)=>{
+        if(e.key == 'Enter'){
+            deleteRow()
+        }
+    })
+
+    function openModal(e){
+        selectedRow = e
+        confirmDelete.classList.remove('hide')
+        let i = rankArray.findIndex(x=> x.id == selectedRow.closest('tr').id)
+        userName.innerHTML = "Delete " + rankArray[i].name + '-' + rankArray[i].wpm + 'wpm'
+    }
+    
+    function closeModal(){
+        confirmInput.value = ''
+        errorMsg.classList.add('hide')
+        selectedRow = ''
+        userName.innerHTML = ''
+        confirmDelete.classList.add('hide')
+    }
+
+    cancelBtn.addEventListener('click',()=>{
+        closeModal()
     })
 }

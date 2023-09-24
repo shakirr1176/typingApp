@@ -36,15 +36,16 @@ export let timeMange = [
     },
 ]
 
-
 let table = `<div>
                 <table cellspacing="0" cellpadding="0">
                     <thead>
                         <tr>
-                            <th>Rank</th>
-                            <th>Name</th>
+                            <th>rank</th>
+                            <th>name</th>
                             <th>wpm</th>
                             <th>accuracy</th>
+                            <th>right word</th>
+                            <th>wrong word</th>
                             <th class="text-center">action</th>
                         </tr>
                     </thead>

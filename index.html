@@ -9,7 +9,6 @@
 </head>
 <body>
     <div class="result-container hidden">
-
         <div class="details">
             <div class="wpm">Skill</div>
             <div class="skill"></div>
@@ -63,14 +62,10 @@
     </div>
     <script type="module">
         import {timeMange,manageTime} from './data.js'
-        
         let selectTime = document.querySelector('.slect-time')
-
         timeMange.forEach(el => {
             selectTime.innerHTML += `<div data-time="${el.time}" class="times">${manageTime(el.time)}</div>`
         });
-
-        
     </script>
     <script type="module" src="type.js"></script>
 </body>

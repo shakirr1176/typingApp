@@ -123,7 +123,9 @@ class MyType{
         let currentObj = {
             name: this.nameInput.value,
             wpm: this.finalResult,
-            accuracy: this.accuracy
+            accuracy: this.accuracy,
+            rightWord: this.rightWord,
+            wrongWord: this.currentWordIndex+1 - this.rightWord
         }
 
         if(rankArray){

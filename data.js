@@ -1,3 +1,42 @@
+export let timeMange = [
+    {
+        time: '5',
+        name: 'fiveSecRank',
+        fiveSecRank: []
+    },
+    {
+        time: '15',
+        name: 'fifteenSecRank',
+        fifteenSecRank:[]
+    },
+    {
+        time: '30',
+        name: 'thirtySecRank',
+        thirtySecRank:[]
+    },
+    {
+        time: '60',
+        name: 'sixtySecRank',
+        sixtySecRank:[]
+    },
+    {
+        time: '300',
+        name: 'threeHunSecRank',
+        threeHunSecRank:[]
+    },
+    {
+        time: '600',
+        name: 'sixHunSecRank',
+        sixHunSecRank:[]
+    },
+    {
+        time: '1800',
+        name: 'eighteenHunSecRank',
+        eighteenHunSecRank:[]
+    },
+]
+
+
 let table = `<div>
                 <table cellspacing="0" cellpadding="0">
                     <thead>
@@ -13,89 +52,41 @@ let table = `<div>
                 </table>
             </div>`
 
-export let data = [
-    {
-        id: '5',
-        name: 'five-sec-rank',
-        storageName: 'fiveSecRank',
-        template: `<div class="five-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>5</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-    {
-        id: '15',
-        name: 'fifteen-sec-rank',
-        storageName: 'fifteenSecRank',
-        template: `<div class="fifteen-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>15</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-    {
-        id: '30',
-        name: 'thirty-sec-rank',
-        storageName: 'thirtySecRank',
-        template: `<div class="thirty-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>30</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-    {
-        id: '60',
-        name: 'sixty-sec-rank',
-        storageName: 'sixtySecRank',
-        template: `<div class="sixty-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>1min</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-    {
-        id: '300',
-        name: 'three-hun-sec-rank',
-        storageName: 'threeHunSecRank',
-        template: `<div class="three-hun-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>5min</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-    {
-        id: '600',
-        name: 'six-hun-sec-rank',
-        storageName: 'sixHunSecRank',
-        template: `<div class="six-hun-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>10min</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-    {
-        id: '1800',
-        name: 'eighteen-hun-sec-rank',
-        storageName: 'eighteenHunSecRank',
-        template: `<div class="eighteen-hun-sec-rank">
-                        <div class="rank-time">
-                            Time
-                            <span>30min</span>
-                        </div>
-                        ${table}
-                    </div>`
-    },
-]
+function secondsToTime(e){
+    const h = Math.floor(e / 3600).toString(),
+          m = Math.floor(e % 3600 / 60).toString(),
+          s = Math.floor(e % 60).toString();
+
+    return {
+        hours:h,
+        min: m,
+        sec:s
+    };
+}
+
+export function manageTime(countTime){
+    if(secondsToTime(countTime).min > 0){
+        return `<span>${secondsToTime(countTime).min}</span>min <span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : ''}</span>`  
+    }else if(secondsToTime(countTime).hours > 0){
+        return `<span>${secondsToTime(countTime).hours}</span>hour <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'min' : '' }</span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`  
+    }else{
+        return `<span>${secondsToTime(countTime).sec}</span>s`  
+    }
+}
+
+export let data = []
+
+timeMange.forEach(el=>{
+    data.push({
+        id: el.time,
+        name: el.name,
+        storageName: el.name,
+        template: `<div class="${el.name}">
+                    <div class="rank-time">
+                        Time
+                        ${manageTime(el.time)}
+                    </div>
+                    ${table}
+                </div>`
+    })
+})

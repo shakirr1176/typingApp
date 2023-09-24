@@ -1,17 +1,24 @@
-import {data} from './data.js'
+import {data,timeMange} from './data.js'
 
 let allTemplate = data
 
 let tableMain = document.querySelector('#table-main')
 
-tableMain.innerHTML = localStorage.getItem('time') ? allTemplate.find(x=> x.id == localStorage.getItem('time')).template : allTemplate[1].template
 
-allTemplate.forEach(tem=>{
-    let taleDiv = document.querySelector(`.${tem.name}`)
-    if(taleDiv){
-        allTableSet(taleDiv,tem.storageName)
-    }
-})
+
+try {
+    tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time == localStorage.getItem('time')) ? allTemplate.find(x=> x.id == localStorage.getItem('time')).template : allTemplate[1].template
+
+    allTemplate.forEach(tem=>{
+        if(!tem) return
+        let taleDiv = document.querySelector(`.${tem.name}`)
+        if(taleDiv){
+            allTableSet(taleDiv,tem.storageName)
+        }
+    })    
+} catch (error) {
+    console.log('no data found');
+}
 
 function allTableSet(tableDiv,rank){
     if(!tableDiv) return

@@ -42,15 +42,7 @@
             <div class="line"></div>
             <div class="time-container">
                 <div class="time"></div>
-                <div class="slect-time">
-                    <div data-time="5" class="times">5s</div>
-                    <div data-time="15" class="times">15s</div>
-                    <div data-time="30" class="times">30s</div>
-                    <div data-time="60" class="times">1min</div>
-                    <div data-time="300" class="times">5min</div>
-                    <div data-time="600" class="times">10min</div>
-                    <div data-time="1800" class="times">30min</div>
-                </div>
+                <div class="slect-time"></div>
                 <a href="rank.html" class="leaderboard">
                     <img src="icons8-crown-50.png" alt="">
                     <span>leaderboard</span>
@@ -69,6 +61,17 @@
             </div>
         </div>
     </div>
-    <script src="type.js"></script>
+    <script type="module">
+        import {timeMange,manageTime} from './data.js'
+        
+        let selectTime = document.querySelector('.slect-time')
+
+        timeMange.forEach(el => {
+            selectTime.innerHTML += `<div data-time="${el.time}" class="times">${manageTime(el.time)}</div>`
+        });
+
+        
+    </script>
+    <script type="module" src="type.js"></script>
 </body>
 </html>

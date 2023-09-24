@@ -1,3 +1,4 @@
+import { manageTime,timeMange } from "./data.js"
 class MyType{
     constructor(){
         this.declaration()
@@ -27,21 +28,18 @@ class MyType{
         this.showResult = document.querySelector('.result')
         this.acurracyDiv = document.querySelector('.acurracy')
         this.skill = document.querySelector('.skill')
+        this.manageTime = manageTime
+        this.rankArray = timeMange
+        
         this.timeOption = document.querySelectorAll('.times')
-        this.prev = localStorage.getItem('time') ? [...this.timeOption].filter(el=> el.dataset.time == localStorage.getItem('time'))[0] : this.timeOption[1]
+        this.prev = localStorage.getItem('time')  && this.rankArray.some(el=>el.time == localStorage.getItem('time') ) ? [...this.timeOption].filter(el=> el.dataset.time == localStorage.getItem('time'))[0] : this.timeOption[1]
+        
         this.totalTime = +this.prev.dataset.time
         this.countTime = this.totalTime
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
 
-        this.fiveSecRankArray = []
-        this.fifteenSecRankArray = []
-        this.thirtySecRankArray = []
-        this.sixtySecRankArray = []
-        this.threeHunSecRankArray = []
-        this.sixHunSecRankArray = []
-        this.eighteenHunSecRankArray = []
 
         this.finalResult = 0
         this.restart = document.querySelector('.restart')
@@ -86,17 +84,13 @@ class MyType{
         this.nameInput.value = ''
         this.prev.classList.add('active')
 
-        this.fiveSecRankArray = JSON.parse(localStorage.getItem('fiveSecRank')) || []
-        this.fifteenSecRankArray = JSON.parse(localStorage.getItem('fifteenSecRank')) || []
-        this.thirtySecRankArray = JSON.parse(localStorage.getItem('thirtySecRank')) || []
-        this.sixtySecRankArray = JSON.parse(localStorage.getItem('sixtySecRank')) || []
-        this.threeHunSecRankArray = JSON.parse(localStorage.getItem('threeHunSecRank')) || []
-        this.sixHunSecRankArray = JSON.parse(localStorage.getItem('sixHunSecRank')) || []
-        this.eighteenHunSecRankArray = JSON.parse(localStorage.getItem('eighteenHunSecRank')) || []
+        this.rankArray.forEach(el=>{
+            Object.values(el).pop()[0] = JSON.parse(localStorage.getItem(Object.keys(el).pop())) || []
+        })
 
         this.result()
-
-        this.manageTime(this.countTime)
+        
+        this.time.innerHTML = this.manageTime(this.countTime)
         this.word = document.querySelectorAll('.word')
         this.para.style.marginTop = null
         this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
@@ -115,30 +109,11 @@ class MyType{
     rankFun(){
         if(!this.isType){
             if(this.nameInput.value.trim() !== ''){
-
-                switch (this.prev.dataset.time) {
-                    case '5':
-                        this.specificTimeFunc(this.fiveSecRankArray,'fiveSecRank')
-                        break;
-                    case '30':
-                        this.specificTimeFunc(this.thirtySecRankArray,'thirtySecRank')
-                        break;
-                    case '60':
-                        this.specificTimeFunc(this.sixtySecRankArray,'sixtySecRank')
-                        break;
-                    case '300':
-                        this.specificTimeFunc(this.threeHunSecRankArray,'threeHunSecRank')
-                        break;
-                    case '600':
-                        this.specificTimeFunc(this.sixHunSecRankArray,'sixHunSecRank')
-                        break;
-                    case '1800':
-                        this.specificTimeFunc(this.eighteenHunSecRankArray,'eighteenHunSecRank')
-                        break;
-                    default:
-                        this.specificTimeFunc(this.fifteenSecRankArray,'fifteenSecRank')
-                        break;
-                }
+                this.rankArray.forEach(el=>{
+                    if(this.prev.dataset.time == el.time){
+                        this.specificTimeFunc(Object.values(el).pop()[0],Object.keys(el).pop())
+                    }
+                })
             }
         }
     }
@@ -146,7 +121,6 @@ class MyType{
     specificTimeFunc = (rankArray,rank)=>{
 
         let currentObj = {
-            // id: rankArray.length+1,
             name: this.nameInput.value,
             wpm: this.finalResult,
             accuracy: this.accuracy
@@ -172,7 +146,7 @@ class MyType{
     timer(){
         let timeDecrase = ()=>{
             this.countTime--
-            this.manageTime(this.countTime)
+            this.time.innerHTML = this.manageTime(this.countTime)
             if(this.countTime == 0){
                 this.isTypingStart = false
                 this.isType = false
@@ -210,32 +184,10 @@ class MyType{
                     this.prev = el
                     this.totalTime = +el.dataset.time
                     this.countTime = this.totalTime
-                    this.manageTime(this.totalTime)
+                    this.time.innerHTML = this.manageTime(this.totalTime)
                 }
             })
         })
-    }
-
-    secondsToTime(e){
-        const h = Math.floor(e / 3600).toString(),
-              m = Math.floor(e % 3600 / 60).toString(),
-              s = Math.floor(e % 60).toString();
-
-        return {
-            hours:h,
-            min: m,
-            sec:s
-        };
-    }
-
-    manageTime(countTime){
-        if(this.secondsToTime(countTime).min > 0){
-            this.time.innerHTML = `<span>${this.secondsToTime(countTime).min}</span>min <span>${this.secondsToTime(countTime).sec}</span>s`  
-        }else if(this.secondsToTime(countTime).hours > 0){
-            this.time.innerHTML = `<span>${this.secondsToTime(countTime).hours}</span>hour <span>${this.secondsToTime(countTime).min}</span>min <span>${this.secondsToTime(countTime).sec}</span>s`  
-       }else{
-            this.time.innerHTML = `<span>${this.secondsToTime(countTime).sec}</span>s`  
-       }
     }
 
     postionLine(letter,word){
@@ -426,7 +378,6 @@ class MyType{
             }
         }
 
-        
         this.total_typed_word.innerHTML = this.currentWordIndex+1
         this.right_word.innerHTML = this.rightWord
         this.wrong_word.innerHTML = this.currentWordIndex+1 - this.rightWord
@@ -447,7 +398,7 @@ class MyType{
             case this.finalResult>=50 && this.finalResult<60:
                 this.skility = 'semi pro'
                 break;
-            case this.finalResult>=70 && this.finalResult<80:
+            case this.finalResult>=60 && this.finalResult<80:
                 this.skility = 'professional'
                 break;
             case this.finalResult>=80 && this.finalResult<100:

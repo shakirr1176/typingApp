@@ -21,30 +21,57 @@ let paggination = document.querySelector('.paggination')
 
     let nextPrevValue = localStorage.getItem('nextPrev'+currentTemple.name) ? +localStorage.getItem('nextPrev'+currentTemple.name) : 0
     
+    function sortinAllData(allData){
+        if(allData){
+            allData.sort((y, x) => {
+                if(x.wpm > y.wpm){
+                    return x.wpm - y.wpm
+                }
+                if(x.wpm == y.wpm){
+                    return x.accuracy - y.accuracy
+                }
+                return 0
+            });
+        }
+    }
+
     if(currentTemple){
         let tableDiv = document.querySelector(`.${currentTemple.name}`)
+        let activeRowObj = localStorage.getItem(`activeObjFor${currentTemple.name}`) ? JSON.parse(localStorage.getItem(`activeObjFor${currentTemple.name}`)) : null
         let allData = JSON.parse(localStorage.getItem(currentTemple.storageName)) ? JSON.parse(localStorage.getItem(currentTemple.storageName)) : []
         if(tableDiv){
+
+            sortinAllData(allData)
+
+            if( localStorage.getItem(`isActiveFor${currentTemple.storageName}`) &&
+                localStorage.getItem(`isActiveFor${currentTemple.storageName}`) == 'yes'
+             ){
+                let crrPos = allData.findIndex(p=>p.name == activeRowObj.name)
+                nextPrevValue = Math.floor(crrPos/limit)*limit
+            }
+
+
+            allTableSet(tableDiv,allData,currentTemple,nextPrevValue,activeRowObj)
 
             if(nextPrevValue%limit !== 0){
                 nextPrevValue = 0
                 localStorage.setItem('nextPrev'+currentTemple.name,'0')
-                allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
+                allTableSet(tableDiv,allData,currentTemple,nextPrevValue,activeRowObj)
             }
-            
-            allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
 
             paggination.addEventListener('click',(e)=>{
                 if(e.target.classList.contains('prev') && nextPrevValue !== 0 && nextPrevValue > 0){
                     nextPrevValue = nextPrevValue - limit
                     localStorage.setItem('nextPrev'+currentTemple.name,nextPrevValue)
-                    allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
+                    allTableSet(tableDiv,allData,currentTemple,nextPrevValue,activeRowObj)
+                    localStorage.setItem(`isActiveFor${currentTemple.storageName}`,'no')
                 }
 
                 if(e.target.classList.contains('next') && nextPrevValue < allData.length-limit){
                     nextPrevValue = nextPrevValue + limit
                     localStorage.setItem('nextPrev'+currentTemple.name,nextPrevValue)
-                    allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
+                    allTableSet(tableDiv,allData,currentTemple,nextPrevValue,activeRowObj)
+                    localStorage.setItem(`isActiveFor${currentTemple.storageName}`,'no')
                 }
             })
 
@@ -60,7 +87,6 @@ let paggination = document.querySelector('.paggination')
                 let i = allData.findIndex(x=> x.id == selectedRow.closest('tr').id)
                 userName.innerHTML = "Delete " + allData[i].name + '-' + allData[i].wpm + 'wpm' + '?'
             }
-
 
             function deleteRow(){
                 let i = allData.findIndex(x=> x.id == selectedRow.closest('tr').id)
@@ -80,7 +106,7 @@ let paggination = document.querySelector('.paggination')
                         localStorage.setItem('nextPrev'+currentTemple.name,nextPrevValue)
 
                     }
-                    allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
+                    allTableSet(tableDiv,allData,currentTemple,nextPrevValue,activeRowObj)
                     closeModal()
                 }else{
                     errorMsg.classList.remove('hide')
@@ -111,11 +137,14 @@ let paggination = document.querySelector('.paggination')
         } 
     }
 
-function allTableSet(tableDiv,allData,currentTemple,nextPrevValue){
+
+
+function allTableSet(tableDiv,allData,currentTemple,nextPrevValue,activeRowObj){
     if(!tableDiv) return
 
-    rankArray = JSON.parse(localStorage.getItem(currentTemple.storageName)) ? JSON.parse(localStorage.getItem(currentTemple.storageName)).slice(nextPrevValue,limit+nextPrevValue) : []
+    sortinAllData(allData)
 
+    rankArray = allData ? allData.slice(nextPrevValue,limit+nextPrevValue) : []
     let tbody = tableDiv.querySelector('tbody')
 
     if(allData.length > limit){
@@ -137,34 +166,19 @@ function allTableSet(tableDiv,allData,currentTemple,nextPrevValue){
     }
 
     if(rankArray && rankArray.length != 0){
-        rankArray.sort((y, x) => {
-            if(x.wpm > y.wpm){
-                return x.wpm - y.wpm
-            }
-            if(x.wpm == y.wpm){
-                return x.accuracy - y.accuracy
-            }
-            return 0
-        });
-
-        allData.sort((y, x) => {
-            if(x.wpm > y.wpm){
-                return x.wpm - y.wpm
-            }
-            if(x.wpm == y.wpm){
-                return x.accuracy - y.accuracy
-            }
-            return 0
-        });
 
         tbody.innerHTML = ''
-        rankArray.forEach((el,i)=>{
 
+        rankArray.forEach((el,i)=>{
             let tr = document.createElement('tr')
             el.id = i+nextPrevValue+1  
             allData[el.id-1].id = i+nextPrevValue+1
             localStorage.setItem(currentTemple.storageName,JSON.stringify(allData))
             tr.id = i+nextPrevValue+1
+
+            if(activeRowObj && el.name == activeRowObj.name){
+                tr.classList.add('active-td')
+            }
 
             tr.innerHTML =  `<td>${i+nextPrevValue+1}</td>
                             <td class="td-max">${el.name ? el.name : ''}</td>

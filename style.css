@@ -431,3 +431,7 @@ tbody tr:nth-child(2n+1){
     filter: brightness(0.6);
     cursor: not-allowed !important;
 }
+
+.active-td{
+    background: var(--primary) !important;
+}

@@ -3,9 +3,6 @@ export let timeMange = [
         time: '5'
     },
     {
-        time: '10'
-    },
-    {
         time: '15'
     },
     {

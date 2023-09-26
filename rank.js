@@ -17,14 +17,21 @@ let paggination = document.querySelector('.paggination')
 
     let currentTemple = allTemplate.find(x=> x.id == localStorage.getItem('time')) ? allTemplate.find(x=> x.id == localStorage.getItem('time')) : allTemplate[1]
     
-    let limit = 5
+    let limit = 10
 
     let nextPrevValue = localStorage.getItem('nextPrev'+currentTemple.name) ? +localStorage.getItem('nextPrev'+currentTemple.name) : 0
-
+    
     if(currentTemple){
         let tableDiv = document.querySelector(`.${currentTemple.name}`)
         let allData = JSON.parse(localStorage.getItem(currentTemple.storageName)) ? JSON.parse(localStorage.getItem(currentTemple.storageName)) : []
         if(tableDiv){
+
+            if(nextPrevValue%limit !== 0){
+                nextPrevValue = 0
+                localStorage.setItem('nextPrev'+currentTemple.name,'0')
+                allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
+            }
+            
             allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
 
             paggination.addEventListener('click',(e)=>{
@@ -39,7 +46,6 @@ let paggination = document.querySelector('.paggination')
                     localStorage.setItem('nextPrev'+currentTemple.name,nextPrevValue)
                     allTableSet(tableDiv,allData,currentTemple,nextPrevValue)
                 }
-                console.log(nextPrevValue);
             })
 
             tableDiv.addEventListener('click',(e)=>{
@@ -59,7 +65,11 @@ let paggination = document.querySelector('.paggination')
             function deleteRow(){
                 let i = allData.findIndex(x=> x.id == selectedRow.closest('tr').id)
                 let rankArrayIndex = rankArray.findIndex(x=> x.id == selectedRow.closest('tr').id)
-                if(confirmInput.value.trim().toLocaleLowerCase() == allData[i].name.trim().toLocaleLowerCase()){
+               
+                if( 
+                    (allData[i].name.trim().toLocaleLowerCase().length <= 3 && allData[i].name.trim().toLocaleLowerCase() == confirmInput.value.trim()) 
+                    || 
+                    (confirmInput.value.trim().length > 3 && confirmInput.value.trim().toLocaleLowerCase() == allData[i].name.trim().toLocaleLowerCase().slice(0,confirmInput.value.trim().length))){
                     selectedRow.closest('tr').remove()
                     allData.splice(i,1)
                     rankArray.splice(rankArrayIndex,1)
@@ -137,19 +147,25 @@ function allTableSet(tableDiv,allData,currentTemple,nextPrevValue){
             return 0
         });
 
+        allData.sort((y, x) => {
+            if(x.wpm > y.wpm){
+                return x.wpm - y.wpm
+            }
+            if(x.wpm == y.wpm){
+                return x.accuracy - y.accuracy
+            }
+            return 0
+        });
+
         tbody.innerHTML = ''
         rankArray.forEach((el,i)=>{
 
             let tr = document.createElement('tr')
             el.id = i+nextPrevValue+1  
-
-            if(allData[el.id-1]){
-                allData[el.id-1].id = i+nextPrevValue+1
-            }
-
+            allData[el.id-1].id = i+nextPrevValue+1
             localStorage.setItem(currentTemple.storageName,JSON.stringify(allData))
-
             tr.id = i+nextPrevValue+1
+
             tr.innerHTML =  `<td>${i+nextPrevValue+1}</td>
                             <td class="td-max">${el.name ? el.name : ''}</td>
                             <td>${el.wpm || el.wpm == 0 ? el.wpm : ''}</td>

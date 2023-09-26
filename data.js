@@ -1,40 +1,34 @@
 export let timeMange = [
     {
-        time: '5',
-        name: 'fiveSecRank',
-        fiveSecRank: []
+        time: '5'
     },
     {
-        time: '15',
-        name: 'fifteenSecRank',
-        fifteenSecRank:[]
+        time: '10'
     },
     {
-        time: '30',
-        name: 'thirtySecRank',
-        thirtySecRank:[]
+        time: '15'
     },
     {
-        time: '60',
-        name: 'sixtySecRank',
-        sixtySecRank:[]
+        time: '30'
     },
     {
-        time: '300',
-        name: 'threeHunSecRank',
-        threeHunSecRank:[]
+        time: '60'
     },
     {
-        time: '600',
-        name: 'sixHunSecRank',
-        sixHunSecRank:[]
+        time: '300'
     },
     {
-        time: '1800',
-        name: 'eighteenHunSecRank',
-        eighteenHunSecRank:[]
+        time: '600'
+    },
+    {
+        time: '1800'
     },
 ]
+
+timeMange.forEach(el=>{
+    el.name = 'rank'+el.time
+    el['rank'+el.time] = []
+})
 
 let table = `<div class="table-container">
                 <table cellspacing="0" cellpadding="0">

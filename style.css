@@ -397,7 +397,6 @@ tbody tr:nth-child(2n+1){
     position: absolute;
     bottom: 100%;
     padding-bottom: 12px;
-    text-transform: capitalize;
     left: 0%;
     color: white;
     width: 200px;
@@ -406,8 +405,6 @@ tbody tr:nth-child(2n+1){
 }
 
 .table-container{
-    max-height: 756px;
-    overflow-y: scroll;
     margin-top: 30px;
 }
 
@@ -415,4 +412,22 @@ tbody tr:nth-child(2n+1){
     position: sticky;
     top: 0;
     background-color: #27282b;
+}
+
+.paggination{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.paggination button{
+    margin: 0 16px;
+    padding: 10px 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dim{
+    filter: brightness(0.6);
+    cursor: not-allowed !important;
 }

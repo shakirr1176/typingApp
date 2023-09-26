@@ -156,6 +156,9 @@ class MyType{
         }else{
             rankArray.push(currentObj)
         }
+
+        localStorage.setItem(`isActiveFor${rank}`,'yes')
+        localStorage.setItem(`activeObjFor${rank}`,JSON.stringify(currentObj))
         localStorage.setItem(rank,JSON.stringify(rankArray))
     }
 

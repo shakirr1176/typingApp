@@ -1,4 +1,10 @@
 import { manageTime,timeMange } from "./data.js"
+
+let selectTime = document.querySelector('.slect-time')
+timeMange.forEach(el => {
+    selectTime.innerHTML += `<div data-time="${el.time}" class="times">${manageTime(el.time)}</div>`
+});
+
 class MyType{
     constructor(){
         this.declaration()

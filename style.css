@@ -15,7 +15,21 @@ body{
     --word-padding: 5.7px;
     --primary: #28ae60
 }
+ul{
+    list-style: none;
+}
+.pagginatio-number{
+    display: flex;
+}
 
+.pagginatio-number>li{
+    background: #bdc2ca;
+    margin:0 6px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .container{
     max-width: 1140px;
     margin: auto;
@@ -337,6 +351,7 @@ tbody tr:nth-child(2n+1){
     justify-content: center;
     align-items: center;
     z-index: 99;
+    transition: all 300ms linear;
 }
 
 .input-container{
@@ -418,10 +433,11 @@ tbody tr:nth-child(2n+1){
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .paggination button{
-    margin: 0 16px;
+    margin: 0 8px;
     padding: 10px 16px;
     border: none;
     cursor: pointer;
@@ -432,6 +448,22 @@ tbody tr:nth-child(2n+1){
     cursor: not-allowed !important;
 }
 
+.pagg-num-active{
+    cursor: not-allowed !important;
+    background: var(--primary);
+    color: white;
+}
+
 .active-td{
     background: var(--primary) !important;
 }
+
+.first-list-btn > svg ,.last-list-btn > svg{
+    width: 16px;
+    color: white;
+}
+.first-list-btn,.last-list-btn{
+    padding: 0px !important;
+    background: none;
+}
+

@@ -52,7 +52,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
 
             sortinAllData(allData)
 
-            if( localStorage.getItem(`isActiveFor${currentTemple.storageName}`) &&
+            if( activeRowObj && localStorage.getItem(`isActiveFor${currentTemple.storageName}`) &&
                 localStorage.getItem(`isActiveFor${currentTemple.storageName}`) == 'yes'
              ){
                 let crrPos = allData.findIndex(p=>p.name == activeRowObj.name)

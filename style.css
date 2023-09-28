@@ -470,3 +470,74 @@ tbody tr:nth-child(2n+1){
 .crown{
     width: 16px;
 }
+
+.primary-color{
+    display: flex;
+    flex-wrap: wrap;
+}
+.p-color{
+    width: 50px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.color-change{
+    position: fixed;
+    top: 50%;
+    right: 0;
+    background-color: white;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+}
+.bring-color{
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+.all-color{
+    background: white;
+    width: 200px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 100%;
+    margin-right: 16px;
+    height: 0;
+    overflow: hidden;
+    transform-origin: center;
+    transition: all 150ms ease;
+}
+
+.p-4{
+    padding: 16px;
+}
+
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -4px;
+}
+
+.p-color-con{
+    width: auto;
+    padding:  0 4px;
+    margin-top: 8px;
+}
+
+.setting{
+    animation: spin 1000ms linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform: rotate(360deg);
+    }
+}

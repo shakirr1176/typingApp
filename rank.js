@@ -250,7 +250,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
                             tr.classList.add('active-td')
                         }
             
-                        tr.innerHTML =  `<td>${i+nextPrevValue+1}</td>
+                        tr.innerHTML =  `<td>${i+nextPrevValue+1 == 1 ? '<img class="crown" src="icons8-crown-50.png" alt="">' : i+nextPrevValue+1}</td>
                                         <td class="td-max">${el.name ? el.name : ''}</td>
                                         <td>${el.wpm || el.wpm == 0 ? el.wpm : ''}</td>
                                         <td>${el.accuracy || el.accuracy == 0 ? el.accuracy : ''}%</td>

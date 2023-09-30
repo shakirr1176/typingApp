@@ -9,13 +9,28 @@
     --word-size : 45px;
     --word-padding: 5.7px;
     --primary: #28ae60;
-    --bgColor: hsl(225,5%,16%);
+
+    
+    --commonColor-h: 225;
+    --commonColor-s: 5%;
+    --commonColor-l: 16%;
+
+    --commonColor: hsl(var(--commonColor-h), var(--commonColor-s), var(--commonColor-l));
+
+    --othercommonColor-l: calc(var(--commonColor-l) * 1.2 );
+    --textColor-l : calc(var(--commonColor-l) * 2.2 );
+    --leaderBoard : calc(var(--commonColor-l) * 3.5 );
+    --paggination : 90%;
+    --tableRow : calc(var(--commonColor-l) * 0.85 );
 }
+
+
 body{
-    background-color: var(--bgColor);
+    background-color: var(--commonColor);
     height: 100vh;
     font-family: 'Roboto Mono', monospace;
 }
+
 ul{
     list-style: none;
 }
@@ -23,14 +38,6 @@ ul{
     display: flex;
 }
 
-.pagginatio-number>li{
-    background: #bdc2ca;
-    margin:0 6px;
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 .container{
     max-width: 1140px;
     margin: auto;
@@ -57,7 +64,7 @@ a{
 }
 
 .para{
-    color: #646669;
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
     font-size: 24px;
     line-height: 140%;
     display: flex;
@@ -74,7 +81,7 @@ a{
     margin-bottom: 40px;
 }
 .para-container:focus .show-key{
-    background: #494a4d;
+    background: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
 }
 
 .word{
@@ -96,7 +103,7 @@ a{
 .restart-after-win,.restart{
     text-transform: capitalize;
     border: none;
-    background: #494a4d;
+    background: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
     padding: 10px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -104,17 +111,13 @@ a{
     display: inline-block;
 }
 .restart-after-win{
-    background:  #35383b;
-    color: rgba(255, 255, 255, 0.63);
+    background: hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));
 }
-
-.restart-after-win:hover,.restart:hover{
-    background: #404144;
-} 
 
 .restart-after-win>svg,.restart>svg{
     width: 23px;
-    color: rgb(218, 218, 218);
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));
     transition: all 300ms linear;
 }
 
@@ -145,6 +148,7 @@ a{
 .time{
     color: var(--primary);
     font-size: 20px;
+    width: 120px;
 }
 
 .result-container{
@@ -173,7 +177,7 @@ a{
 }
 
 .wpm{
-    color: #898d92;
+    color:  hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
     font-size: 30px;
 }
 
@@ -192,8 +196,8 @@ a{
 
 .slect-time{
     display: inline-flex;
-    background-color: #2c2e31;
-    color: #646669;
+    background-color: hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
     border-radius: 7px;
     padding: 10px 16px;
     font-size: 13px;
@@ -225,7 +229,7 @@ textarea{
 .the-text{
     padding: 20px 0;
     text-align: center;
-    color: #bdc2ca
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard))
 }
 
 .wrong-word{
@@ -241,10 +245,10 @@ textarea{
     outline: none;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.63);
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
     font-size: 17px;
     border-radius: 4px;
-    border: 2px solid #646669;
+    border: 2px solid hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
 }
 
 .restart-con{
@@ -261,7 +265,7 @@ textarea{
 }
 
 .more-details{
-    background:  #2c2e31;
+    background:  hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
     color: rgba(255, 255, 255, 0.63);
     padding: 10px 16px;
     display: inline-flex;
@@ -276,13 +280,13 @@ textarea{
     padding: 10px 16px;
     margin-bottom: 20px;
     outline: none;
-    border: 2px #404144 solid;
+    border: 2px hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l)) solid;
     color: white;
     text-align: center;
 }
 
 .name-input::placeholder{
-    color: #bdc2ca;
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
 }
 
 .leaderboard>img{
@@ -291,16 +295,16 @@ textarea{
 }
 
 .rank-title{
-    color: #bdc2ca;
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
     font-size: 24px;
 }
 .rank-time{
-    color: #bdc2ca;
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
     margin-top: 20px;
 }
 
 th{
-    color: #646669;
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
     text-align: left;
     padding: 10px 10px;
 }
@@ -310,18 +314,18 @@ table{
 }
 tbody tr td{
     padding: 10px 10px;
-
 }
+
 tbody tr{
     color: white;
 }
 
 tbody tr:nth-child(2n+1){
-    background: #202024c5;
+    background: hsl(var(--commonColor-h), var(--commonColor-s), var(--tableRow));
 }
 .no-data{
     text-align: center;
-    color: #494a4d;
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
 }
 
 .delete-btn{
@@ -356,7 +360,7 @@ tbody tr:nth-child(2n+1){
 }
 
 .input-container{
-    background: #1d1f20;
+    background: hsl(var(--commonColor-h), var(--commonColor-s), 9%);
     padding: 50px;
     position: relative;
 }
@@ -374,18 +378,18 @@ tbody tr:nth-child(2n+1){
 .input-field > input{
     background: none;
     border: none;
-    border: 2px solid #35363a;
+    border: 2px solid hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
     padding: 10px 16px;
     outline: none;
     color: white;
 }
 .input-field > input::placeholder{
-    color: #898d92;
+    color:  hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));
     text-transform: capitalize;
 }
 
 .input-field >button{
-    background: #35363a;
+    background: hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
     width: 40px;
     display: inline-block;
     border: none;
@@ -401,9 +405,9 @@ tbody tr:nth-child(2n+1){
 .error-msg{
     color: #7e2a33;
     position: absolute;
-     top: 100%;
-     left: 0;
-     width: 100%;
+    top: 100%;
+    left: 0;
+    width: 100%;
 }
 
 .error-msg.hide{
@@ -417,7 +421,8 @@ tbody tr:nth-child(2n+1){
     color: white;
     width: 200px;
     overflow: hidden;
-    white-space: nowrap;    text-overflow: ellipsis;
+    white-space: nowrap;    
+    text-overflow: ellipsis;
 }
 
 .table-container{
@@ -427,7 +432,7 @@ tbody tr:nth-child(2n+1){
 .table-container > table > thead {
     position: sticky;
     top: 0;
-    background-color: var(--bgColor);
+    background-color: var(--commonColor);
 }
 
 .paggination{
@@ -534,6 +539,7 @@ tbody tr:nth-child(2n+1){
 }
 .p-color-chang,.bg-color-chang{
     width: 100%;
+    height: 32px;
     margin-top: 16px;
     border: none;
     cursor: pointer;

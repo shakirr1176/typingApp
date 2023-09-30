@@ -134,7 +134,6 @@ class MyType{
             this.para.innerHTML += this.moreText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
             this.word = document.querySelectorAll('.word')
         }
-
     }
 
     rankFun(){

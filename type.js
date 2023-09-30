@@ -12,11 +12,13 @@ class MyType{
     }
 
     declaration(){
-        this.allText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/and/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
+        this.moreText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/and/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
+        this.allText = this.moreText
         this.para = document.querySelector('.para')
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
         this.isNext = true;
+        this.remainWord = 50
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.isTypingStart = false
@@ -126,6 +128,15 @@ class MyType{
         })
     }
 
+    addmoreMoreText(){
+        if(this.word.length - this.currentWordIndex < this.remainWord){
+            this.shuffleArray(this.moreText)
+            this.para.innerHTML += this.moreText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
+            this.word = document.querySelectorAll('.word')
+        }
+
+    }
+
     rankFun(){
         if(!this.isType){
             if(this.nameInput.value.trim() !== ''){
@@ -154,7 +165,6 @@ class MyType{
                 rankArray.push(currentObj)
             }else{ 
                 if((currentObj.wpm > hasAlready.wpm) || (currentObj.wpm == hasAlready.wpm && hasAlready.accuracy < currentObj.accuracy)){
-                    console.log(hasAlready);
                     const i = rankArray.findIndex(x => x.name.trim('') === hasAlready.name.trim(''))
                     rankArray[i] = currentObj
                 }
@@ -236,7 +246,7 @@ class MyType{
             this.para.style.marginTop = this.scrollUnit + 'px'
             this.line.style.top = (lineTop - this.measure) + 8 + 'px'
         }
-        
+
         if(lineTop < paraTop){
             this.scrollUnit = this.scrollUnit + this.measure
             this.para.style.marginTop = this.scrollUnit + 'px'
@@ -287,6 +297,9 @@ class MyType{
             if( e.code == 'Space'&&
                 this.word[this.currentWordIndex+1] && this.isType
               ){
+                
+                this.addmoreMoreText()
+                
                 if(
                     this.word[this.currentWordIndex] && 
 

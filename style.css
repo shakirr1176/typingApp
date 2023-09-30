@@ -4,16 +4,17 @@
     box-sizing: border-box;
 }
 
-body{
-    background:#27282b;
-    height: 100vh;
-    font-family: 'Roboto Mono', monospace;
-}
 
 :root{
     --word-size : 45px;
     --word-padding: 5.7px;
-    --primary: #28ae60
+    --primary: #28ae60;
+    --bgColor: hsl(225,5%,16%);
+}
+body{
+    background-color: var(--bgColor);
+    height: 100vh;
+    font-family: 'Roboto Mono', monospace;
 }
 ul{
     list-style: none;
@@ -238,7 +239,7 @@ textarea{
     width: 60%;
     padding: 10px 16px;
     outline: none;
-    background: #2c2e31;
+    background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.63);
     font-size: 17px;
@@ -426,7 +427,7 @@ tbody tr:nth-child(2n+1){
 .table-container > table > thead {
     position: sticky;
     top: 0;
-    background-color: #27282b;
+    background-color: var(--bgColor);
 }
 
 .paggination{
@@ -475,7 +476,7 @@ tbody tr:nth-child(2n+1){
     display: flex;
     flex-wrap: wrap;
 }
-.p-color{
+.p-color,.bg-color{
     width: 50px;
     height: 25px;
     cursor: pointer;
@@ -526,10 +527,16 @@ tbody tr:nth-child(2n+1){
     margin: 0 -4px;
 }
 
-.p-color-con{
+.color-con{
     width: auto;
     padding:  0 4px;
     margin-top: 8px;
+}
+.p-color-chang,.bg-color-chang{
+    width: 100%;
+    margin-top: 16px;
+    border: none;
+    cursor: pointer;
 }
 
 .setting{

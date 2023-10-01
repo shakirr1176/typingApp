@@ -53,6 +53,7 @@ class MyType{
         this.right_word = document.querySelector('.right-word-show')
         this.wrong_word = document.querySelector('.wrong-word-show')
         this.nameInput = document.querySelector('.name-input')
+        this.capLock = document.querySelector('.caps-lock')
     }
 
     draw(){
@@ -255,6 +256,13 @@ class MyType{
     
     startTyping(){
         window.addEventListener('keydown',(e)=>{
+            if(this.capLock.classList.contains('hide') && e.key == 'CapsLock'){
+                this.capLock.classList.remove('hide')
+                setTimeout(() => {
+                    this.capLock.classList.add('hide')
+                }, 2000);
+            }
+
             let currentWord = this.word[this.currentWordIndex]
             if( e.code != 'Space' &&
             !this.extraKey.includes(e.key)

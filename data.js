@@ -6,9 +6,6 @@ export let timeMange = [
         time: '15'
     },
     {
-        time: '30'
-    },
-    {
         time: '60'
     },
     {
@@ -16,10 +13,7 @@ export let timeMange = [
     },
     {
         time: '600'
-    },
-    {
-        time: '1800'
-    },
+    }
 ]
 
 timeMange = localStorage.getItem('timeArray') ? JSON.parse(localStorage.getItem('timeArray')) : timeMange
@@ -60,10 +54,10 @@ function secondsToTime(e){
 
 export function manageTime(countTime){
     if(secondsToTime(countTime).hours > 0){
-        return `<span>${secondsToTime(countTime).hours}</span>hour <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'min' : '' }</span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`
+        return `<span>${secondsToTime(countTime).hours}</span>h <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'min' : '' } </span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`
     }else{
         if(secondsToTime(countTime).min > 0){
-            return `<span>${secondsToTime(countTime).min}</span>min <span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : ''}</span>`  
+            return `<span>${secondsToTime(countTime).min}</span>m <span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : ''}</span>`  
         }else{
             return `<span>${secondsToTime(countTime).sec}</span>s`  
         }

@@ -41,11 +41,7 @@ ul{
 .container{
     max-width: 1140px;
     margin: auto;
-    padding: 0 24px;
-}
-
-.header{
-    padding: 16px 0;
+    padding: 40px 24px;
 }
 
 a{
@@ -60,7 +56,7 @@ a{
 }
 
 .main{
-    padding: 50px 0;
+    padding: 30px 0;
 }
 
 .para{
@@ -174,6 +170,7 @@ a{
 .hidden{
     opacity: 0;
     visibility: hidden;
+    display: none;
 }
 
 .wpm{
@@ -239,7 +236,7 @@ textarea{
     text-decoration-thickness: 1.5px;
 }
 
-.type-input{
+.type-input,.pop-up-input{
     width: 60%;
     padding: 10px 16px;
     outline: none;
@@ -411,6 +408,10 @@ tbody tr:nth-child(2n+1){
     width: 100%;
 }
 
+.pop-up-error{
+    color: #ca1f30;
+    font-size: 13px;
+}
 .error-msg.hide{
     display: none;
 }
@@ -572,4 +573,49 @@ tbody tr:nth-child(2n+1){
 .caps-lock >svg{
     width: 20px;
     margin-right: 10px;
+}
+
+.custom-time > svg{
+    width: 16px;
+    color: white;
+    cursor: pointer;
+}
+
+.custom-time-pop-up{
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.671);
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pop-up-div{
+    width: 400px;
+    background-color: hsl(var(--commonColor-h), var(--commonColor-s), var(--commonColor-l));
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l));
+    border-radius: 5px;
+    padding: 32px;
+}
+
+.pop-up-div label{
+    display: block;
+    margin: 10px 0;
+}
+.pop-up-input{
+    width: 100%;
+    background: hsl(var(--commonColor-h), var(--commonColor-s), 15%);
+}
+
+.pop-up-div > button{
+    background: hsl(var(--commonColor-h), var(--commonColor-s), 15%);
+    color: white;
+    width: 100%;
+    margin-top: 16px;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 17px;
 }

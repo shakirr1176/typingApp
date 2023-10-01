@@ -562,7 +562,7 @@ tbody tr:nth-child(2n+1){
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    top: 70px;
+    top: 50px;
     align-items: center;
     color: white;
     padding: 16px 20px;

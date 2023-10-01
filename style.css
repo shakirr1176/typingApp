@@ -373,6 +373,7 @@ tbody tr:nth-child(2n+1){
 .hide{
     opacity: 0;
     pointer-events: none;
+    transition: all 400ms linear;
 }
 
 .input-field > input{
@@ -553,4 +554,22 @@ tbody tr:nth-child(2n+1){
     to{
         transform: rotate(360deg);
     }
+}
+
+.caps-lock{
+    background-color: var(--primary);
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    top: 70px;
+    align-items: center;
+    color: white;
+    padding: 16px 20px;
+    border-radius: 5px;
+}
+
+.caps-lock >svg{
+    width: 20px;
+    margin-right: 10px;
 }

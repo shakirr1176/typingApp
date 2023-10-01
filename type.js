@@ -79,7 +79,6 @@ class MyType{
         this.capLock = document.querySelector('.caps-lock')
         this.customTimeBtn = document.querySelector('.custom-time')
         this.customTimePopUp = document.querySelector('.custom-time-pop-up')
-        this.popUpBtn = document.querySelector('.pop-up-btn')
         this.popUpInput = document.querySelector('.pop-up-input')
         this.timeLabel = document.querySelector('.time-label')
         this.popUpError = document.querySelector('.pop-up-error')
@@ -170,7 +169,7 @@ class MyType{
                 this.isPopUpOpen = true
                 this.popUpInput.value = ''
                 this.popUpError.innerHTML = ''
-                this.timeLabel.innerHTML = 'Total time : '
+                this.timeLabel.innerHTML = 'Total time '
             }
         })
 
@@ -188,7 +187,7 @@ class MyType{
             if(this.popUpInput.value.match(/^[0-9]+$/) !== null){
 
                 if(this.popUpInput.value <= 86400){
-                    this.timeLabel.innerHTML = 'Total time : ' + this.manageTime(this.popUpInput.value)
+                    this.timeLabel.innerHTML = 'Total time ' + this.manageTime(this.popUpInput.value)
                     if(this.popUpInput.value <= 0){
                         this.popUpError.classList.remove('hidden')
                         this.popUpError.innerHTML = 'Time can\'t be zero'
@@ -199,34 +198,38 @@ class MyType{
                 }
                 
             }else{
+                this.timeLabel.innerHTML = 'Total time '
                 this.popUpError.classList.remove('hidden')
                 this.popUpError.innerHTML = 'value should be number'
             }
         })
 
-        this.popUpBtn.addEventListener('click',()=>{
-            if(this.popUpInput.value != 0 && this.popUpInput.value <= 86400 && this.popUpInput.value.match(/^[0-9]+$/) !== null){
-                this.isPopUpOpen = false
 
-                this.customTimePopUp.classList.add('hidden')
-
-                this.totalTime = this.popUpInput.value
-                this.countTime = this.totalTime
-                localStorage.setItem('time',this.popUpInput.value)
-                this.time.innerHTML = this.manageTime(this.totalTime)
-
-                if(this.prev && this.prev.dataset.time != this.popUpInput.value){
-                    this.prev.classList.remove('active')
+        this.popUpInput.addEventListener('keypress',(e)=>{
+            if (e.key == 'Enter') {
+                if(this.popUpInput.value != 0 && this.popUpInput.value <= 86400 && this.popUpInput.value.match(/^[0-9]+$/) !== null){
+                    this.isPopUpOpen = false
+    
+                    this.customTimePopUp.classList.add('hidden')
+    
+                    this.totalTime = this.popUpInput.value
+                    this.countTime = this.totalTime
+                    localStorage.setItem('time',this.popUpInput.value)
+                    this.time.innerHTML = this.manageTime(this.totalTime)
+    
+                    if(this.prev && this.prev.dataset.time != this.popUpInput.value){
+                        this.prev.classList.remove('active')
+                    }
+    
+                    this.prev = this.popUpInput.value  && this.rankArray.some(el=>el.time == this.popUpInput.value ) ? [...this.timeOption].filter(el=> el.dataset.time == this.popUpInput.value)[0] : ''
+                    this.warning = true
+    
+                    if(this.prev){
+                        this.prev.classList.add('active')
+                    }
+    
+                    this.popUpInput.value = ''
                 }
-
-                this.prev = this.popUpInput.value  && this.rankArray.some(el=>el.time == this.popUpInput.value ) ? [...this.timeOption].filter(el=> el.dataset.time == this.popUpInput.value)[0] : ''
-                this.warning = true
-
-                if(this.prev){
-                    this.prev.classList.add('active')
-                }
-
-                this.popUpInput.value = ''
             }
         })
     }

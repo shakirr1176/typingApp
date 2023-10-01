@@ -22,6 +22,8 @@ export let timeMange = [
     },
 ]
 
+timeMange = localStorage.getItem('timeArray') ? JSON.parse(localStorage.getItem('timeArray')) : timeMange
+
 timeMange.forEach(el=>{
     el.name = 'rank'+el.time
     el['rank'+el.time] = []
@@ -57,12 +59,14 @@ function secondsToTime(e){
 }
 
 export function manageTime(countTime){
-    if(secondsToTime(countTime).min > 0){
-        return `<span>${secondsToTime(countTime).min}</span>min <span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : ''}</span>`  
-    }else if(secondsToTime(countTime).hours > 0){
-        return `<span>${secondsToTime(countTime).hours}</span>hour <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'min' : '' }</span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`  
+    if(secondsToTime(countTime).hours > 0){
+        return `<span>${secondsToTime(countTime).hours}</span>hour <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'min' : '' }</span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`
     }else{
-        return `<span>${secondsToTime(countTime).sec}</span>s`  
+        if(secondsToTime(countTime).min > 0){
+            return `<span>${secondsToTime(countTime).min}</span>min <span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : ''}</span>`  
+        }else{
+            return `<span>${secondsToTime(countTime).sec}</span>s`  
+        }
     }
 }
 

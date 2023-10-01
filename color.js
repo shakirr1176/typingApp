@@ -51,7 +51,7 @@ if(colorChange){
         }
     }
 
-    bgColorChang.value = localStorage.getItem('bgGex') ? localStorage.getItem('bgGex') : ''
+    bgColorChang.value = localStorage.getItem('bgGex') ? localStorage.getItem('bgGex') : '#000000'
 
     bgColorChang.addEventListener('change',()=>{
         localStorage.setItem('bgGex',bgColorChang.value)

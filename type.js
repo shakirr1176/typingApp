@@ -5,6 +5,12 @@ timeMange.forEach(el => {
     selectTime.innerHTML += `<div data-time="${el.time}" class="times">${manageTime(el.time)}</div>`
 });
 
+selectTime.innerHTML += `<div class="custom-time">
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="0" stroke="fill">
+<path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+</svg>
+</div>`
+
 class MyType{
     constructor(){
         this.declaration()
@@ -38,8 +44,25 @@ class MyType{
         this.manageTime = manageTime
         this.rankArray = timeMange
         this.timeOption = document.querySelectorAll('.times')
-        this.prev = localStorage.getItem('time')  && this.rankArray.some(el=>el.time == localStorage.getItem('time') ) ? [...this.timeOption].filter(el=> el.dataset.time == localStorage.getItem('time'))[0] : this.timeOption[1]
-        this.totalTime = +this.prev.dataset.time
+
+        this.prev
+
+        if(localStorage.getItem('time')  && this.rankArray.some(el=>el.time == localStorage.getItem('time') )){
+          this.prev =  [...this.timeOption].filter(el=> el.dataset.time == localStorage.getItem('time'))[0]
+        }else{
+            if(localStorage.getItem('time') && !this.rankArray.some(el=>el.time == localStorage.getItem('time') ) ){
+                if(this.prev){
+                    this.prev.classList.remove('active')
+                }
+                this.prev = ''
+            }else{
+                if(!localStorage.getItem('time')){
+                    this.prev = this.timeOption[1]
+                }
+            }
+        }
+
+        this.totalTime = localStorage.getItem('time') ? localStorage.getItem('time') : timeMange[1].time
         this.countTime = this.totalTime
         this.measure = 45
         this.scrollUnit = 0
@@ -54,11 +77,20 @@ class MyType{
         this.wrong_word = document.querySelector('.wrong-word-show')
         this.nameInput = document.querySelector('.name-input')
         this.capLock = document.querySelector('.caps-lock')
+        this.customTimeBtn = document.querySelector('.custom-time')
+        this.customTimePopUp = document.querySelector('.custom-time-pop-up')
+        this.popUpBtn = document.querySelector('.pop-up-btn')
+        this.popUpInput = document.querySelector('.pop-up-input')
+        this.timeLabel = document.querySelector('.time-label')
+        this.popUpError = document.querySelector('.pop-up-error')
+        this.isPopUpOpen = false
+        this.warning = false
     }
 
     draw(){
         this.shuffleArray(this.allText)
         this.forAfterRestart = this.allText
+        this.customTimeFunc()
         this.initialize()
         this.selectTime()
         this.startTyping()
@@ -95,7 +127,6 @@ class MyType{
         })
     }
 
-
     initialize(){
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
         this.showResult.closest('.result-container').classList.add('hidden')
@@ -105,7 +136,9 @@ class MyType{
         this.right_word.innerHTML = 0
         this.wrong_word.innerHTML = 0
         this.nameInput.value = ''
-        this.prev.classList.add('active')
+        if(this.prev){
+            this.prev.classList.add('active')
+        }
 
         this.rankArray.forEach(el=>{
             Object.values(el).pop()[0] = JSON.parse(localStorage.getItem(Object.keys(el).pop())) || []
@@ -129,6 +162,75 @@ class MyType{
         })
     }
 
+    customTimeFunc(){
+
+        this.customTimeBtn.addEventListener('click',()=>{
+            if(!this.isTypingStart){
+                this.customTimePopUp.classList.remove('hidden')
+                this.isPopUpOpen = true
+                this.popUpInput.value = ''
+                this.popUpError.innerHTML = ''
+                this.timeLabel.innerHTML = 'Total time : '
+            }
+        })
+
+        window.addEventListener('click',(e)=>{
+            if((!e.target.closest('.custom-time') && !e.target.closest('.pop-up-div')
+            )){
+                this.customTimePopUp.classList.add('hidden')
+            }
+        })
+
+        this.popUpInput.addEventListener('input',()=>{
+
+            this.popUpError.classList.add('hidden')
+
+            if(this.popUpInput.value.match(/^[0-9]+$/) !== null){
+
+                if(this.popUpInput.value <= 86400){
+                    this.timeLabel.innerHTML = 'Total time : ' + this.manageTime(this.popUpInput.value)
+                    if(this.popUpInput.value <= 0){
+                        this.popUpError.classList.remove('hidden')
+                        this.popUpError.innerHTML = 'Time can\'t be zero'
+                    }
+                }else{
+                    this.popUpError.classList.remove('hidden')
+                    this.popUpError.innerHTML = 'Time should be less than 24 hours'
+                }
+                
+            }else{
+                this.popUpError.classList.remove('hidden')
+                this.popUpError.innerHTML = 'value should be number'
+            }
+        })
+
+        this.popUpBtn.addEventListener('click',()=>{
+            if(this.popUpInput.value != 0 && this.popUpInput.value <= 86400 && this.popUpInput.value.match(/^[0-9]+$/) !== null){
+                this.isPopUpOpen = false
+
+                this.customTimePopUp.classList.add('hidden')
+
+                this.totalTime = this.popUpInput.value
+                this.countTime = this.totalTime
+                localStorage.setItem('time',this.popUpInput.value)
+                this.time.innerHTML = this.manageTime(this.totalTime)
+
+                if(this.prev && this.prev.dataset.time != this.popUpInput.value){
+                    this.prev.classList.remove('active')
+                }
+
+                this.prev = this.popUpInput.value  && this.rankArray.some(el=>el.time == this.popUpInput.value ) ? [...this.timeOption].filter(el=> el.dataset.time == this.popUpInput.value)[0] : ''
+                this.warning = true
+
+                if(this.prev){
+                    this.prev.classList.add('active')
+                }
+
+                this.popUpInput.value = ''
+            }
+        })
+    }
+
     addmoreMoreText(){
         if(this.word.length - this.currentWordIndex < this.remainWord){
             this.shuffleArray(this.moreText)
@@ -138,7 +240,7 @@ class MyType{
     }
 
     rankFun(){
-        if(!this.isType){
+        if(!this.isType && this.prev){
             if(this.nameInput.value.trim() !== ''){
                 this.rankArray.forEach(el=>{
                     if(this.prev.dataset.time == el.time){
@@ -180,11 +282,22 @@ class MyType{
 
     timer(){
         let timeDecrase = ()=>{
-            this.countTime--
-            this.time.innerHTML = this.manageTime(this.countTime)
+            if(this.countTime > 0){
+                this.countTime--
+                this.time.innerHTML = this.manageTime(this.countTime)
+            }
             if(this.countTime == 0){
                 this.isTypingStart = false
                 this.isType = false
+
+                if(this.prev == ''){
+                    this.nameInput.classList.add('hidden') 
+                    this.restartAfterWin.innerHTML = 'Restart'
+                }else{
+                    this.nameInput.classList.remove('hidden') 
+                    this.restartAfterWin.innerHTML = 'Save and restart'
+                }
+
                 this.showResult.closest('.result-container').classList.remove('hidden')
                 this.result()
                 clearInterval(this.myTimer)
@@ -257,7 +370,7 @@ class MyType{
     startTyping(){
 
         window.addEventListener('keydown',(e)=>{
-            
+
             if(e.key !== 'CapsLock'){
                 if(e.getModifierState('CapsLock')){
                     this.capLock.classList.remove('hide')
@@ -272,7 +385,7 @@ class MyType{
             let currentWord = this.word[this.currentWordIndex]
             if( e.code != 'Space' &&
             !this.extraKey.includes(e.key)
-            && e.key.length == 1 && this.isType
+            && e.key.length == 1 && this.isType && !this.isPopUpOpen
             ){
                 this.line.classList.remove('line-animation')
                 this.isTypingStart = true
@@ -308,7 +421,7 @@ class MyType{
             }
         
             if( e.code == 'Space'&&
-                this.word[this.currentWordIndex+1] && this.isType
+                this.word[this.currentWordIndex+1] && this.isType && !this.isPopUpOpen
               ){
                 
                 this.addmoreMoreText()
@@ -336,7 +449,7 @@ class MyType{
                 }
             }
         
-            if( e.key == 'Backspace' && this.isType
+            if( e.key == 'Backspace' && this.isType && !this.isPopUpOpen
                ){
         
                 if(this.currentLetterIndex > -2){

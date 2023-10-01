@@ -255,14 +255,20 @@ class MyType{
     }
     
     startTyping(){
-        window.addEventListener('keydown',(e)=>{
-            if(this.capLock.classList.contains('hide') && e.key == 'CapsLock'){
-                this.capLock.classList.remove('hide')
-                setTimeout(() => {
-                    this.capLock.classList.add('hide')
-                }, 2000);
-            }
 
+        window.addEventListener('keydown',(e)=>{
+            
+            if(e.key !== 'CapsLock'){
+                if(e.getModifierState('CapsLock')){
+                    this.capLock.classList.remove('hide')
+                }else{
+                    this.capLock.classList.add('hide')
+                }
+            }
+            if(e.key == 'CapsLock'){
+                this.capLock.classList.toggle('hide')
+            }
+               
             let currentWord = this.word[this.currentWordIndex]
             if( e.code != 'Space' &&
             !this.extraKey.includes(e.key)

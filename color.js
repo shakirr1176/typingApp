@@ -42,7 +42,7 @@ if(colorChange){
         localStorage.setItem('p-color',pColorChang.value)
     })
 
-    if(localStorage.getItem('p-color').includes('#')){
+    if(localStorage.getItem('p-color') && localStorage.getItem('p-color').includes('#')){
         pColorChang.value = localStorage.getItem('p-color')
     }else{
         if(localStorage.getItem('p-color')){

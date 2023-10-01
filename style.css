@@ -600,9 +600,14 @@ tbody tr:nth-child(2n+1){
     padding: 32px;
 }
 
+.text-center{
+    text-align: center;
+}
+
 .pop-up-div label{
     display: block;
-    margin: 10px 0;
+    margin-bottom: 15px;
+    margin-top: 20px;
 }
 .pop-up-input{
     width: 100%;

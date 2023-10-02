@@ -44,7 +44,7 @@ ul{
     padding: 40px 24px;
 }
 
-a{
+a:not(.leaderboard){
     background: var(--primary);
     padding: 10px 16px;
     color: white;
@@ -53,6 +53,11 @@ a{
     cursor: pointer;
     display: inline-block;
     text-decoration: none;
+}
+.leaderboard > svg{
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));
+    margin-top: 7px;
+    margin-left: 15px;
 }
 
 .main{
@@ -107,6 +112,7 @@ a{
     display: inline-block;
 }
 .restart-after-win{
+    width: 100%;
     background: hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
     color: hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));
 }
@@ -144,26 +150,25 @@ a{
 .time{
     color: var(--primary);
     font-size: 20px;
-    width: 150px;
 }
 
 .result-container{
     position: fixed;
     height: 100vh;
     width: 100vw;
-    background: rgba(0, 0, 0, 0.397);
+    background: hsl(var(--commonColor-h), 90%, 8%);
     transition: all 500ms linear;
-    text-align: center;
     display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-wrap: wrap;
     z-index: 9999;
     backdrop-filter: blur(2px);
+    padding: 40px;
 }
 
 .details{
     padding-top: 100px;
+    width: 30%;
+    padding-right: 20px;
 }
 
 
@@ -178,17 +183,28 @@ a{
     font-size: 30px;
 }
 
-.result,.acurracy,.skill{
+.result,.acurracy{
     color: var(--primary);
     margin-bottom: 20px;
     margin-top: 10px;
     font-size: 20px;
 }
 
-.time-container{
+.slect-time-div{
     display: flex;
-    justify-content: space-between;
-    align-items: end;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.time-zone{
+    display: flex;
+    align-items: center;
+}
+
+.wpm-result-per-sec{
+    margin-left: 40px;
+    font-size: 20px;
+    color: var(--primary);
 }
 
 .slect-time{
@@ -256,15 +272,27 @@ textarea{
 }
 
 .details-div{
-    display: flex;
-    justify-content: center;
+    width: 100%;
     padding-bottom: 16px;
 }
+.chart-div{
+    width: 70%;
+}
 
+.chart{
+    width: 100%;
+}
+
+.chart >div{
+    width: 100%;
+}
+.logo{
+    width: 30px;
+    color: var(--primary);
+}
 .more-details{
-    background:  hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
-    color: rgba(255, 255, 255, 0.63);
-    padding: 10px 16px;
+    color:  hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
+    padding: 10px 30px;
     display: inline-flex;
     list-style: none;
     border-radius: 5px;
@@ -276,21 +304,36 @@ textarea{
     background: none;
     padding: 10px 16px;
     margin-bottom: 20px;
+    width: 100%;
     outline: none;
     border: 2px hsl(var(--commonColor-h), var(--commonColor-s), var(--textColor-l)) solid;
     color: white;
-    text-align: center;
 }
 
 .name-input::placeholder{
     color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
 }
-
+.leaderboard{
+    background: none;
+}
 .leaderboard>img{
     width: 18px;
     margin-right: 3px;
 }
-
+nav{
+    display: flex;
+    align-items: center;
+}
+.app-name{
+    color: hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));
+    font-size: 22px;
+    margin-left: 15px;
+}
+.logo-con{
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
 .rank-title{
     color: hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
     font-size: 24px;

@@ -56,7 +56,6 @@ if(colorChange){
     bgColorChang.addEventListener('change',()=>{
         localStorage.setItem('bgGex',bgColorChang.value)
         let color = hexToCssHsl(bgColorChang.value)
-        console.log(color[0]);
         setColorToDoc(color)
     })
 

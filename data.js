@@ -54,7 +54,7 @@ function secondsToTime(e){
 
 export function manageTime(countTime){
     if(secondsToTime(countTime).hours > 0){
-        return `<span>${secondsToTime(countTime).hours}</span>h <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'min' : '' } </span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`
+        return `<span>${secondsToTime(countTime).hours}</span>h <span>${secondsToTime(countTime).min > 0 ? secondsToTime(countTime).min + 'm' : '' } </span><span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : '' }</span>`
     }else{
         if(secondsToTime(countTime).min > 0){
             return `<span>${secondsToTime(countTime).min}</span>m <span>${secondsToTime(countTime).sec > 0 ? secondsToTime(countTime).sec + 's' : ''}</span>`  

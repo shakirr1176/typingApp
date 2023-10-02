@@ -27,6 +27,7 @@ class MyType{
         this.remainWord = 50
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
+        this.wpmGraphData = []
         this.isTypingStart = false
         this.isSetInterval = true
         this.isType = true
@@ -40,7 +41,6 @@ class MyType{
         this.time = document.querySelector('.time')
         this.showResult = document.querySelector('.result')
         this.acurracyDiv = document.querySelector('.acurracy')
-        this.skill = document.querySelector('.skill')
         this.manageTime = manageTime
         this.rankArray = timeMange
         this.timeOption = document.querySelectorAll('.times')
@@ -82,8 +82,10 @@ class MyType{
         this.popUpInput = document.querySelector('.pop-up-input')
         this.timeLabel = document.querySelector('.time-label')
         this.popUpError = document.querySelector('.pop-up-error')
+        this.wpmResultPerSec = document.querySelector('.wpm-result-per-sec')
         this.isPopUpOpen = false
         this.warning = false
+        this.chart = document.querySelector('.chart')
     }
 
     draw(){
@@ -127,6 +129,7 @@ class MyType{
     }
 
     initialize(){
+        this.chart.innerHTML = ''
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
         this.showResult.closest('.result-container').classList.add('hidden')
         this.line.classList.add('line-animation')
@@ -145,6 +148,8 @@ class MyType{
 
         this.result()
         
+        this.wpmResultPerSec.innerHTML = ''
+
         this.time.innerHTML = this.manageTime(this.countTime)
         this.word = document.querySelectorAll('.word')
         this.para.style.marginTop = null
@@ -234,6 +239,73 @@ class MyType{
         })
     }
 
+    chartFunc(){
+
+        this.chart.innerHTML =  `<canvas id="myChart"></canvas>`
+
+        const ctx = document.getElementById('myChart');
+        const DATA_COUNT = +this.totalTime+1;
+        const labels = [];
+
+        let strokColor = getComputedStyle(this.time).getPropertyValue('--primary')
+
+        for (let i = 1; i < DATA_COUNT; i++) {
+            labels.push(i.toString());
+        }
+
+        const datapoints = this.wpmGraphData;
+        const data = {
+        labels: labels,
+        datasets: [
+            {
+            label: 'wpm',
+            data: datapoints,
+            borderColor: strokColor,
+            borderWidth: 2,
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4
+            }
+        ]
+        };
+
+        const config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+            title: {
+                display: true,
+                text: ''
+            },
+            },
+            interaction: {
+            intersect: false,
+            },
+            scales: {
+            x: {
+                display: true,
+                title: {
+                display: true
+                }
+            },
+            y: {
+                display: true,
+                title: {
+                display: true,
+                text: 'Value'
+                },
+                suggestedMin: 0,
+                suggestedMax: this.finalResult + 50
+            }
+            }
+        },
+        };
+
+        let aa = new Chart(ctx,config)
+    }
+
     addmoreMoreText(){
         if(this.word.length - this.currentWordIndex < this.remainWord){
             this.shuffleArray(this.moreText)
@@ -288,11 +360,12 @@ class MyType{
             if(this.countTime > 0){
                 this.countTime--
                 this.time.innerHTML = this.manageTime(this.countTime)
+                this.resultPerSec()
             }
             if(this.countTime == 0){
                 this.isTypingStart = false
                 this.isType = false
-
+                
                 if(this.prev == ''){
                     this.nameInput.classList.add('hidden') 
                     this.restartAfterWin.innerHTML = 'Restart'
@@ -300,9 +373,11 @@ class MyType{
                     this.nameInput.classList.remove('hidden') 
                     this.restartAfterWin.innerHTML = 'Save and restart'
                 }
-
+                
                 this.showResult.closest('.result-container').classList.remove('hidden')
+                
                 this.result()
+                this.chartFunc()
                 clearInterval(this.myTimer)
             }
         }
@@ -511,6 +586,16 @@ class MyType{
         })
     }
 
+    resultPerSec(){
+        if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
+            this.word[this.currentWordIndex].classList.add('correct-word')
+        }
+
+        let rightWord = document.querySelectorAll('.correct-word').length
+        this.wpmGraphData.push(Math.round((rightWord/(this.totalTime-this.countTime))*60))
+        this.wpmResultPerSec.innerHTML = this.wpmGraphData[this.wpmGraphData.length-1] + 'wpm'
+    }
+
     result(){
         
         if(this.word == null){
@@ -527,8 +612,6 @@ class MyType{
                 this.word[this.currentWordIndex].classList.add('correct-word')
             }
         }
-
-        this.rightWord = document.querySelectorAll('.correct-word').length
         
         for (let i = 0; i < this.currentWordIndex+1; i++) {
             this.totalLetter += this.word[i].children.length
@@ -543,44 +626,15 @@ class MyType{
             }
         }
 
+        this.rightWord = document.querySelectorAll('.correct-word').length
+        let rightLetter = this.para.querySelectorAll('.right').length
+
         this.total_typed_word.innerHTML = this.currentWordIndex+1
         this.right_word.innerHTML = this.rightWord
         this.wrong_word.innerHTML = this.currentWordIndex+1 - this.rightWord
-        
         this.finalResult = Math.round((this.rightWord/this.totalTime)*60)
-        
-        let rightLetter = this.para.querySelectorAll('.right').length
-
         this.accuracy = this.totalLetter==0 ? 0 : Math.round((rightLetter/this.totalLetter)*100)
         
-        switch (true) {
-            case this.finalResult>=30 && this.finalResult<40:
-                this.skility = 'bellow average'
-                break;
-            case this.finalResult>=40 && this.finalResult<50:
-                this.skility = 'average'
-                break;
-            case this.finalResult>=50 && this.finalResult<60:
-                this.skility = 'semi pro'
-                break;
-            case this.finalResult>=60 && this.finalResult<80:
-                this.skility = 'professional'
-                break;
-            case this.finalResult>=80 && this.finalResult<100:
-                this.skility = 'type master'
-                break;
-            case this.finalResult>=100 && this.finalResult<200:
-                this.skility = 'comepetitive'
-                break;
-            case this.finalResult>=200:
-                this.skility = 'hacker'
-                break;
-            default:
-                this.skility = 'noob'
-                break;
-        }
-    
-        this.skill.innerHTML = this.skility
         this.showResult.innerHTML = this.finalResult
         this.acurracyDiv.innerHTML = this.accuracy + '%'
     }   

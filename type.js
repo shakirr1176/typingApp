@@ -297,7 +297,7 @@ class MyType{
                 text: 'Value'
                 },
                 suggestedMin: 0,
-                suggestedMax: this.finalResult + 50
+                suggestedMax: Math.max(...datapoints) + 20
             }
             }
         },

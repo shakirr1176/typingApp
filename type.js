@@ -18,6 +18,7 @@ class MyType{
     }
 
     declaration(){
+        // this.moreText = 'a/a/a/a'.split('/')
         this.moreText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/and/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
         this.allText = this.moreText
         this.para = document.querySelector('.para')
@@ -28,6 +29,7 @@ class MyType{
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.wpmGraphData = []
+        this.instantWPMData = []
         this.isTypingStart = false
         this.isSetInterval = true
         this.isType = true
@@ -86,6 +88,9 @@ class MyType{
         this.isPopUpOpen = false
         this.warning = false
         this.chart = document.querySelector('.chart')
+        this.rightWordPerSec = 0
+        this.countable = true
+        this.hasCounted = false
     }
 
     draw(){
@@ -182,6 +187,7 @@ class MyType{
             if((!e.target.closest('.custom-time') && !e.target.closest('.pop-up-div')
             )){
                 this.customTimePopUp.classList.add('hidden')
+                this.isPopUpOpen = false
             }
         })
 
@@ -247,25 +253,35 @@ class MyType{
         const DATA_COUNT = +this.totalTime+1;
         const labels = [];
 
-        let strokColor = getComputedStyle(this.time).getPropertyValue('--primary')
+        let strokColor = getComputedStyle(this.time).getPropertyValue('--primary') ? getComputedStyle(this.time).getPropertyValue('--primary') : 'white'
+        let strokColor2 = getComputedStyle(this.customTimeBtn).color ? getComputedStyle(this.customTimeBtn).color : 'white'
 
         for (let i = 1; i < DATA_COUNT; i++) {
             labels.push(i.toString());
         }
 
-        const datapoints = this.wpmGraphData;
+        const wpmGraphData = this.wpmGraphData;
+        const instantWPMData = this.instantWPMData;
+
         const data = {
         labels: labels,
         datasets: [
             {
             label: 'wpm',
-            data: datapoints,
+            data: wpmGraphData,
             borderColor: strokColor,
             borderWidth: 2,
             fill: false,
-            cubicInterpolationMode: 'monotone',
             tension: 0.4
-            }
+            },
+            {
+                label: 'Instant WPM',
+                data: instantWPMData,
+                borderWidth: 2,
+                borderColor: strokColor2,
+                fill: false,
+                tension: 0.4
+              },
         ]
         };
 
@@ -284,21 +300,21 @@ class MyType{
             intersect: false,
             },
             scales: {
-            x: {
-                display: true,
-                title: {
-                display: true
-                }
-            },
-            y: {
-                display: true,
-                title: {
-                display: true,
-                text: 'Value'
+                x: {
+                    display: true,
+                    title: {
+                    display: true
+                    }
                 },
-                suggestedMin: 0,
-                suggestedMax: Math.max(...datapoints) + 20
-            }
+                y: {
+                    display: true,
+                    title: {
+                    display: true,
+                    text: 'Value'
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData)) + 20
+                }
             }
         },
         };
@@ -359,9 +375,12 @@ class MyType{
         let timeDecrase = ()=>{
             if(this.countTime > 0){
                 this.countTime--
+                this.instantWPM()
+                this.rightWordPerSec = 0
                 this.time.innerHTML = this.manageTime(this.countTime)
                 this.resultPerSec()
             }
+
             if(this.countTime == 0){
                 this.isTypingStart = false
                 this.isType = false
@@ -473,7 +492,7 @@ class MyType{
                     currentWord.clientWidth < this.para.clientWidth-16 &&
                     this.extraLetter < 20
                   ){
-        
+
                     this.currentLetterIndex++
                     currentWord = this.word[this.currentWordIndex]
 
@@ -503,6 +522,7 @@ class MyType{
               ){
                 
                 this.addmoreMoreText()
+                this.countable = true
                 
                 if(
                     this.word[this.currentWordIndex] && 
@@ -515,6 +535,13 @@ class MyType{
 
                     if([...this.word[this.currentWordIndex].children].every(el=>el.classList.contains('right'))){
                         this.word[this.currentWordIndex].classList.add('correct-word')
+
+                        // this.hasCounted = false
+
+                        if(this.hasCounted == false){
+                            this.rightWordPerSec++
+                        }
+
                     }else{
                         this.word[this.currentWordIndex].classList.add('wrong-word')
                     }
@@ -524,6 +551,7 @@ class MyType{
                     this.currentLetterIndex = -1
                     this.currentWordIndex++
                     this.extraLetter = 0
+                    this.hasCounted = false
                 }
             }
         
@@ -594,6 +622,18 @@ class MyType{
         let rightWord = document.querySelectorAll('.correct-word').length
         this.wpmGraphData.push(Math.round((rightWord/(this.totalTime-this.countTime))*60))
         this.wpmResultPerSec.innerHTML = this.wpmGraphData[this.wpmGraphData.length-1] + 'wpm'
+    }
+
+    instantWPM(){
+        if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
+            if(this.countable){
+                this.rightWordPerSec++
+                this.countable = false
+                this.hasCounted = true
+            }
+        }
+
+        this.instantWPMData.push(Math.round((this.rightWordPerSec/1)*60))
     }
 
     result(){

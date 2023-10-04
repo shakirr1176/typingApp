@@ -30,6 +30,7 @@ let table = `<div class="table-container">
                             <th>rank</th>
                             <th>name</th>
                             <th>wpm</th>
+                            <th>raw</th>
                             <th>accuracy</th>
                             <th>right word</th>
                             <th>wrong word</th>

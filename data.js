@@ -1,6 +1,6 @@
 export let timeMange = [
     {
-        time: '5'
+        time: '2'
     },
     {
         time: '15'

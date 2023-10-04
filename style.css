@@ -208,12 +208,12 @@ a:not(.leaderboard,.logo-con){
     display: none;
 }
 
-.wpm{
+.wpm,.raw-wpm{
     color:  hsl(var(--commonColor-h), var(--commonColor-s), var(--leaderBoard));
     font-size: 30px;
 }
 
-.result,.acurracy{
+.result,.acurracy,.raw-result{
     color: var(--primary);
     margin-bottom: 20px;
     margin-top: 10px;

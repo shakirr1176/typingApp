@@ -35,6 +35,7 @@ class MyType{
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.wpmGraphData = []
+        this.rawwpmGraphData = []
         this.instantWPMData = []
         this.isTypingStart = false
         this.isSetInterval = true
@@ -49,6 +50,7 @@ class MyType{
         this.lineForBot = document.querySelector('.line-for-bot')
         this.time = document.querySelector('.time')
         this.showResult = document.querySelector('.result')
+        this.showRawResult = document.querySelector('.raw-result')
         this.acurracyDiv = document.querySelector('.acurracy')
         this.manageTime = manageTime
         this.rankArray = timeMange
@@ -80,6 +82,7 @@ class MyType{
         this.letterInterval
         this.forAfterRestart
         this.finalResult = 0
+        this.rawResult = 0
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
         this.typeInput = document.querySelector('.type-input')
@@ -385,18 +388,19 @@ class MyType{
         }
 
         const wpmGraphData = this.wpmGraphData;
+        const rawwpmGraphData = this.rawwpmGraphData;
         const instantWPMData = this.instantWPMData;
 
         const data = {
         labels: labels,
         datasets: [
             {
-            label: 'wpm',
-            data: wpmGraphData,
-            borderColor: strokColor,
-            borderWidth: 2,
-            fill: false,
-            tension: 0.4
+                label: 'wpm',
+                data: wpmGraphData,
+                borderColor: strokColor,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
             },
             {
                 label: 'Instant WPM',
@@ -405,7 +409,15 @@ class MyType{
                 borderColor: strokColor2,
                 fill: false,
                 tension: 0.4
-              },
+            },
+            {
+                label: 'raw',
+                data: rawwpmGraphData,
+                borderWidth: 2,
+                borderColor: 'red',
+                fill: false,
+                tension: 0.4
+            },
         ]
         };
 
@@ -437,7 +449,7 @@ class MyType{
                     text: 'w p m'
                     },
                     suggestedMin: 0,
-                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData)) + 20
+                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData),Math.max(...rawwpmGraphData)) + 20
                 }
             }
         },
@@ -471,6 +483,7 @@ class MyType{
         let currentObj = {
             name: this.nameInput.value,
             wpm: this.finalResult,
+            rawWPM: this.rawResult,
             accuracy: this.accuracy,
             rightWord: this.rightWord,
             wrongWord: this.currentWordIndex+1 - this.rightWord
@@ -771,9 +784,20 @@ class MyType{
         if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
             this.word[this.currentWordIndex].classList.add('correct-word')
         }
+        
+        if(
+            [...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right') || el.classList.contains('wrong'))
+        ){
+            if([...this.word[this.currentWordIndex].children].some(el => el.classList.contains('wrong'))){
+                this.word[this.currentWordIndex].classList.add('wrong-word')
+            }
+        }
 
         let rightWord = document.querySelectorAll('.correct-word').length
+        let allWord = document.querySelectorAll('.correct-word,.wrong-word').length
+        
         this.wpmGraphData.push(Math.round((rightWord/(this.totalTime-this.countTime))*60))
+        this.rawwpmGraphData.push(Math.round((allWord/(this.totalTime-this.countTime))*60))
         this.wpmResultPerSec.innerHTML = this.wpmGraphData[this.wpmGraphData.length-1] + 'wpm'
     }
 
@@ -827,8 +851,9 @@ class MyType{
         this.wrong_word.innerHTML = this.currentWordIndex+1 - this.rightWord
         this.finalResult = Math.round((this.rightWord/this.totalTime)*60)
         this.accuracy = this.totalLetter==0 ? 0 : Math.round((rightLetter/this.totalLetter)*100)
-        
+        this.rawResult = this.rawwpmGraphData[this.rawwpmGraphData.length-1]
         this.showResult.innerHTML = this.finalResult
+        this.showRawResult.innerHTML = this.rawResult
         this.acurracyDiv.innerHTML = this.accuracy + '%'
     }   
 }

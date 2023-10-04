@@ -5,11 +5,18 @@ timeMange.forEach(el => {
     selectTime.innerHTML += `<div data-time="${el.time}" class="times">${manageTime(el.time)}</div>`
 });
 
-selectTime.innerHTML += `<div class="custom-time">
+selectTime.innerHTML += `
+<div class="custom-time">
 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="0" stroke="fill">
 <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
 </svg>
-</div>`
+</div>
+<div class="auto-bot">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+</svg>
+</div>
+`
 
 class MyType{
     constructor(){
@@ -18,17 +25,17 @@ class MyType{
     }
 
     declaration(){
-        // this.moreText = 'a/a/a/a'.split('/')
         this.moreText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/and/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
         this.allText = this.moreText
         this.para = document.querySelector('.para')
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
         this.isNext = true;
-        this.remainWord = 50
+        this.remainWord = 5
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.wpmGraphData = []
+        this.rawwpmGraphData = []
         this.instantWPMData = []
         this.isTypingStart = false
         this.isSetInterval = true
@@ -40,8 +47,10 @@ class MyType{
         this.skility;
         this.extraLetter = 0
         this.line = document.querySelector('.line')
+        this.lineForBot = document.querySelector('.line-for-bot')
         this.time = document.querySelector('.time')
         this.showResult = document.querySelector('.result')
+        this.showRawResult = document.querySelector('.raw-result')
         this.acurracyDiv = document.querySelector('.acurracy')
         this.manageTime = manageTime
         this.rankArray = timeMange
@@ -69,8 +78,11 @@ class MyType{
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
+        this.botTime
+        this.letterInterval
         this.forAfterRestart
         this.finalResult = 0
+        this.rawResult = 0
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
         this.typeInput = document.querySelector('.type-input')
@@ -84,25 +96,158 @@ class MyType{
         this.popUpInput = document.querySelector('.pop-up-input')
         this.timeLabel = document.querySelector('.time-label')
         this.popUpError = document.querySelector('.pop-up-error')
+
         this.wpmResultPerSec = document.querySelector('.wpm-result-per-sec')
         this.isPopUpOpen = false
-        this.warning = false
         this.chart = document.querySelector('.chart')
         this.rightWordPerSec = 0
         this.countable = true
         this.hasCounted = false
+
+        this.isautobotPopUpOpen = false
+        this.autoBotBtn = document.querySelector('.auto-bot')
+        this.autobotPopUp = document.querySelector('.auto-bot-pop-up')
+        this.autobotInput = document.querySelector('.autobot-input')
+        this.autobotLabel = document.querySelector('.autobot-label')
+        this.autobotError = document.querySelector('.autobot-error')
+        this.botSpeedDiv = document.querySelector('.bot-speed')
+
+        this.currentWordForBot = 0
+        this.currentLetterForBot = 0
+        this.timeForOneWordCross;
+
+        this.botRemoveBtn  = document.querySelector('.bot-remove-btn')
+        this.botSaveBtn  = document.querySelector('.bot-save-btn')
     }
 
     draw(){
+        this.botSpeed = 0
         this.shuffleArray(this.allText)
         this.forAfterRestart = this.allText
         this.customTimeFunc()
+        this.setAutoBotPopUpFunc()
         this.initialize()
         this.selectTime()
         this.startTyping()
         this.restartFunc()
     }
     
+   
+
+    initialize(){
+        this.chart.innerHTML = ''
+        this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
+        this.showResult.closest('.result-container').classList.add('hidden')
+        this.line.classList.add('line-animation')
+        this.typeInput.value = ''
+        this.total_typed_word.innerHTML = 0
+        this.right_word.innerHTML = 0
+        this.wrong_word.innerHTML = 0
+        this.nameInput.value = ''
+        if(this.prev){
+            this.prev.classList.add('active')
+        }
+
+        this.rankArray.forEach(el=>{
+            Object.values(el).pop()[0] = JSON.parse(localStorage.getItem(Object.keys(el).pop())) || []
+        })
+
+        this.result()
+        
+        this.wpmResultPerSec.innerHTML = ''
+        this.lineForBot.classList.add('hidden')
+
+        this.time.innerHTML = this.manageTime(this.countTime)
+        this.word = document.querySelectorAll('.word')
+        this.para.style.marginTop = null
+        this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+        this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+        clearInterval(this.myTimer)
+        clearInterval(this.botTime)
+        clearInterval(this.letterInterval)
+        
+        window.addEventListener('resize',()=>{
+            this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+            this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
+        })
+        
+        window.addEventListener('scroll',()=>{
+            this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
+        })
+    }
+
+    saveBotWPM(){
+        if(this.autobotInput.value != 0 && this.autobotInput.value <= 1000 && this.autobotInput.value.match(/^[0-9]+$/) !== null){
+            this.isautobotPopUpOpen = false
+            this.autobotPopUp.classList.add('hidden')
+            this.botSpeed = this.autobotInput.value
+            this.timeForOneWordCross = 60/this.botSpeed
+            this.botSpeedDiv.innerHTML = this.botSpeed + 'wpm' + '(Bot)' 
+            this.autobotInput.value = ''
+        }
+    }
+
+    setAutoBotPopUpFunc(){
+
+        this.botRemoveBtn.addEventListener('click',()=>{
+            this.autobotPopUp.classList.add('hidden')
+            this.isautobotPopUpOpen = false
+            this.botSpeed = 0
+            this.botSpeedDiv.innerHTML = ''
+        })
+
+        this.botSaveBtn.addEventListener('click',()=>{
+            this.saveBotWPM()
+        })
+
+        this.autoBotBtn.addEventListener('click',()=>{
+            if(!this.isTypingStart){
+                this.autobotPopUp.classList.remove('hidden')
+                this.isautobotPopUpOpen = true
+                this.autobotInput.value = ''
+                this.autobotError.innerHTML = ''
+                this.autobotLabel.innerHTML = ''
+            }
+        })
+
+        window.addEventListener('click',(e)=>{
+            if((!e.target.closest('.auto-bot') && !e.target.closest('.auto-bot-pop-up-div')
+            )){
+                this.autobotPopUp.classList.add('hidden')
+                this.isautobotPopUpOpen = false
+            }
+        })
+
+        this.autobotInput.addEventListener('input',()=>{
+            this.autobotError.classList.add('hidden')
+            if(this.autobotInput.value.match(/^[0-9]+$/) !== null){
+                
+                if(this.autobotInput.value <= 1000){
+                    this.autobotLabel.innerHTML = this.autobotInput.value + 'WPM'
+                    if(this.autobotInput.value <= 0){
+                        this.autobotError.classList.remove('hidden')
+                        this.autobotError.innerHTML = 'WPM can\'t be zero'
+                    }
+                }else{
+                    this.autobotError.classList.remove('hidden')
+                    this.autobotError.innerHTML = 'WPM should be less than 1000'
+                }
+            }else{
+                this.autobotLabel.innerHTML = ''
+                this.autobotError.classList.remove('hidden')
+                this.autobotError.innerHTML = 'value should be number'
+            }
+        })
+
+        this.autobotInput.addEventListener('keypress',(e)=>{
+            if (e.key == 'Enter') {
+                this.saveBotWPM()
+            }
+        })
+    }
+
     restartFunc(){
         this.restart.addEventListener('click',(e)=>{
             this.declaration()
@@ -133,42 +278,25 @@ class MyType{
         })
     }
 
-    initialize(){
-        this.chart.innerHTML = ''
-        this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
-        this.showResult.closest('.result-container').classList.add('hidden')
-        this.line.classList.add('line-animation')
-        this.typeInput.value = ''
-        this.total_typed_word.innerHTML = 0
-        this.right_word.innerHTML = 0
-        this.wrong_word.innerHTML = 0
-        this.nameInput.value = ''
-        if(this.prev){
-            this.prev.classList.add('active')
+    setAutoBot(){
+        if(this.botSpeed > 0){
+            clearInterval(this.letterInterval)
+            this.lineForBot.classList.remove('hidden')
+            let decrease = ()=>{
+                if(this.countTime > 0){
+                    this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+                    this.currentLetterForBot++
+                }
+                
+                if(this.countTime == 0){
+                    clearInterval(this.botTime)
+                }
+            }
+
+            decrease()
+            
+            this.letterInterval =  setInterval(decrease,(this.timeForOneWordCross/this.word[this.currentWordForBot].children.length)*1000)
         }
-
-        this.rankArray.forEach(el=>{
-            Object.values(el).pop()[0] = JSON.parse(localStorage.getItem(Object.keys(el).pop())) || []
-        })
-
-        this.result()
-        
-        this.wpmResultPerSec.innerHTML = ''
-
-        this.time.innerHTML = this.manageTime(this.countTime)
-        this.word = document.querySelectorAll('.word')
-        this.para.style.marginTop = null
-        this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
-        clearInterval(this.myTimer)
-        
-        window.addEventListener('resize',()=>{
-            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
-            this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
-        })
-        
-        window.addEventListener('scroll',()=>{
-            this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
-        })
     }
 
     customTimeFunc(){
@@ -215,7 +343,6 @@ class MyType{
             }
         })
 
-
         this.popUpInput.addEventListener('keypress',(e)=>{
             if (e.key == 'Enter') {
                 if(this.popUpInput.value != 0 && this.popUpInput.value <= 86400 && this.popUpInput.value.match(/^[0-9]+$/) !== null){
@@ -261,18 +388,19 @@ class MyType{
         }
 
         const wpmGraphData = this.wpmGraphData;
+        const rawwpmGraphData = this.rawwpmGraphData;
         const instantWPMData = this.instantWPMData;
 
         const data = {
         labels: labels,
         datasets: [
             {
-            label: 'wpm',
-            data: wpmGraphData,
-            borderColor: strokColor,
-            borderWidth: 2,
-            fill: false,
-            tension: 0.4
+                label: 'wpm',
+                data: wpmGraphData,
+                borderColor: strokColor,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
             },
             {
                 label: 'Instant WPM',
@@ -281,7 +409,15 @@ class MyType{
                 borderColor: strokColor2,
                 fill: false,
                 tension: 0.4
-              },
+            },
+            {
+                label: 'raw',
+                data: rawwpmGraphData,
+                borderWidth: 2,
+                borderColor: 'red',
+                fill: false,
+                tension: 0.4
+            },
         ]
         };
 
@@ -310,10 +446,10 @@ class MyType{
                     display: true,
                     title: {
                     display: true,
-                    text: 'Value'
+                    text: 'w p m'
                     },
                     suggestedMin: 0,
-                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData)) + 20
+                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData),Math.max(...rawwpmGraphData)) + 20
                 }
             }
         },
@@ -347,6 +483,7 @@ class MyType{
         let currentObj = {
             name: this.nameInput.value,
             wpm: this.finalResult,
+            rawWPM: this.rawResult,
             accuracy: this.accuracy,
             rightWord: this.rightWord,
             wrongWord: this.currentWordIndex+1 - this.rightWord
@@ -369,6 +506,23 @@ class MyType{
         localStorage.setItem(`isActiveFor${rank}`,'yes')
         localStorage.setItem(`activeObjFor${rank}`,JSON.stringify(currentObj))
         localStorage.setItem(rank,JSON.stringify(rankArray))
+    }
+
+    botTimer(){
+        
+        let timeDecrase = ()=>{
+            if(this.countTime > 0){
+                this.currentLetterForBot = 0
+                this.currentWordForBot++
+                this.setAutoBot()
+            }
+            
+            if(this.countTime == 0){
+                clearInterval(this.botTime)
+            }
+        }
+        
+        this.botTime =  setInterval(timeDecrase,this.timeForOneWordCross*1000)
     }
 
     timer(){
@@ -447,8 +601,14 @@ class MyType{
         }
     }
 
+    postionLineForBot(word){
+        if(word){
+            this.lineForBot.style.top = word.offsetTop + 'px'
+            this.lineForBot.style.left = word.offsetLeft + 'px'
+        }
+    }
+
     scrollPara(paraCon,wordLine){
-    
         let paraTop = paraCon.getBoundingClientRect().top
         let lineTop = wordLine.getBoundingClientRect().top
         if(lineTop - paraTop > this.measure){
@@ -482,8 +642,13 @@ class MyType{
             let currentWord = this.word[this.currentWordIndex]
             if( e.code != 'Space' &&
             !this.extraKey.includes(e.key)
-            && e.key.length == 1 && this.isType && !this.isPopUpOpen
-            ){
+            && e.key.length == 1 && this.isType && !this.isPopUpOpen && !this.isautobotPopUpOpen
+            ){  
+
+                if(!this.isTypingStart){
+                    this.setAutoBot()
+                }
+
                 this.line.classList.remove('line-animation')
                 this.isTypingStart = true
                 this.typeInput.focus()
@@ -512,13 +677,16 @@ class MyType{
 
                 if(this.isTypingStart && this.isSetInterval){
                     this.timer()
+                    if(this.botSpeed > 0){
+                        this.botTimer()
+                    }
                 }
     
                 this.isSetInterval = false
             }
         
             if( e.code == 'Space'&&
-                this.word[this.currentWordIndex+1] && this.isType && !this.isPopUpOpen
+                this.word[this.currentWordIndex+1] && this.isType && !this.isPopUpOpen && !this.isautobotPopUpOpen
               ){
                 
                 this.addmoreMoreText()
@@ -535,8 +703,6 @@ class MyType{
 
                     if([...this.word[this.currentWordIndex].children].every(el=>el.classList.contains('right'))){
                         this.word[this.currentWordIndex].classList.add('correct-word')
-
-                        // this.hasCounted = false
 
                         if(this.hasCounted == false){
                             this.rightWordPerSec++
@@ -555,7 +721,7 @@ class MyType{
                 }
             }
         
-            if( e.key == 'Backspace' && this.isType && !this.isPopUpOpen
+            if( e.key == 'Backspace' && this.isType && !this.isPopUpOpen && !this.isautobotPopUpOpen
                ){
         
                 if(this.currentLetterIndex > -2){
@@ -618,9 +784,20 @@ class MyType{
         if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
             this.word[this.currentWordIndex].classList.add('correct-word')
         }
+        
+        if(
+            [...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right') || el.classList.contains('wrong'))
+        ){
+            if([...this.word[this.currentWordIndex].children].some(el => el.classList.contains('wrong'))){
+                this.word[this.currentWordIndex].classList.add('wrong-word')
+            }
+        }
 
         let rightWord = document.querySelectorAll('.correct-word').length
+        let allWord = document.querySelectorAll('.correct-word,.wrong-word').length
+        
         this.wpmGraphData.push(Math.round((rightWord/(this.totalTime-this.countTime))*60))
+        this.rawwpmGraphData.push(Math.round((allWord/(this.totalTime-this.countTime))*60))
         this.wpmResultPerSec.innerHTML = this.wpmGraphData[this.wpmGraphData.length-1] + 'wpm'
     }
 
@@ -674,8 +851,9 @@ class MyType{
         this.wrong_word.innerHTML = this.currentWordIndex+1 - this.rightWord
         this.finalResult = Math.round((this.rightWord/this.totalTime)*60)
         this.accuracy = this.totalLetter==0 ? 0 : Math.round((rightLetter/this.totalLetter)*100)
-        
+        this.rawResult = this.rawwpmGraphData[this.rawwpmGraphData.length-1]
         this.showResult.innerHTML = this.finalResult
+        this.showRawResult.innerHTML = this.rawResult
         this.acurracyDiv.innerHTML = this.accuracy + '%'
     }   
 }

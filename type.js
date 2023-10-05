@@ -380,16 +380,28 @@ class MyType{
         const DATA_COUNT = +this.totalTime+1;
         const labels = [];
 
+        let step = 1
+
+        if(Math.round(+this.totalTime/60) >= 1){
+            step = Math.round(+this.totalTime/60)+1
+        }
+
         let strokColor = getComputedStyle(this.time).getPropertyValue('--primary') ? getComputedStyle(this.time).getPropertyValue('--primary') : 'white'
         let strokColor2 = getComputedStyle(this.customTimeBtn).color ? getComputedStyle(this.customTimeBtn).color : 'white'
 
-        for (let i = 1; i < DATA_COUNT; i++) {
+        for (let i = 1; i < DATA_COUNT; i = i + step) {
             labels.push(i.toString());
         }
 
-        const wpmGraphData = this.wpmGraphData;
-        const rawwpmGraphData = this.rawwpmGraphData;
-        const instantWPMData = this.instantWPMData;
+        const wpmGraphData = [];
+        const rawwpmGraphData = [];
+        // const instantWPMData = [];
+
+        for (let i = 0; i < this.wpmGraphData.length; i = i + step) {
+             wpmGraphData.push(this.wpmGraphData[i]);
+             rawwpmGraphData.push(this.rawwpmGraphData[i])
+            //  instantWPMData.push(this.instantWPMData[i])
+        }
 
         const data = {
         labels: labels,
@@ -402,14 +414,14 @@ class MyType{
                 fill: false,
                 tension: 0.4
             },
-            {
-                label: 'Instant WPM',
-                data: instantWPMData,
-                borderWidth: 2,
-                borderColor: strokColor2,
-                fill: false,
-                tension: 0.4
-            },
+            // {
+            //     label: 'Instant WPM',
+            //     data: instantWPMData,
+            //     borderWidth: 2,
+            //     borderColor: strokColor2,
+            //     fill: false,
+            //     tension: 0.4
+            // },
             {
                 label: 'raw',
                 data: rawwpmGraphData,
@@ -449,7 +461,8 @@ class MyType{
                     text: 'w p m'
                     },
                     suggestedMin: 0,
-                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData),Math.max(...rawwpmGraphData)) + 20
+                    // suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData),Math.max(...rawwpmGraphData)) + 20
+                    suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...rawwpmGraphData)) + 20
                 }
             }
         },

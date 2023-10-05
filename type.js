@@ -31,7 +31,7 @@ class MyType{
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
         this.isNext = false;
-        this.remainWord = 5
+        this.remainWord = 50
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.wpmGraphData = []

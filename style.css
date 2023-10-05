@@ -122,7 +122,11 @@ a:not(.leaderboard,.logo-con){
 .extra{
     color: #7e2a33;
 }
-
+.primary-color-tem{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -4px;
+}
 .restart-after-win,.restart{
     text-transform: capitalize;
     border: none;
@@ -132,6 +136,7 @@ a:not(.leaderboard,.logo-con){
     cursor: pointer;
     transition: all 300ms linear;
     display: inline-block;
+    text-align: center;
 }
 .restart-after-win{
     width: 100%;

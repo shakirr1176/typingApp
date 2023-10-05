@@ -36,7 +36,6 @@ class MyType{
         this.currentLetterIndex = -1
         this.wpmGraphData = []
         this.rawwpmGraphData = []
-        this.instantWPMData = []
         this.isTypingStart = false
         this.isSetInterval = true
         this.isType = true
@@ -78,7 +77,6 @@ class MyType{
         this.measure = 45
         this.scrollUnit = 0
         this.myTimer
-        this.botTime
         this.letterInterval
         this.forAfterRestart
         this.finalResult = 0
@@ -100,9 +98,6 @@ class MyType{
         this.wpmResultPerSec = document.querySelector('.wpm-result-per-sec')
         this.isPopUpOpen = false
         this.chart = document.querySelector('.chart')
-        this.rightWordPerSec = 0
-        this.countable = true
-        this.hasCounted = false
 
         this.isautobotPopUpOpen = false
         this.autoBotBtn = document.querySelector('.auto-bot')
@@ -112,12 +107,12 @@ class MyType{
         this.autobotError = document.querySelector('.autobot-error')
         this.botSpeedDiv = document.querySelector('.bot-speed')
 
-        this.currentWordForBot = 0
         this.currentLetterForBot = 0
         this.timeForOneWordCross;
 
         this.botRemoveBtn  = document.querySelector('.bot-remove-btn')
         this.botSaveBtn  = document.querySelector('.bot-save-btn')
+        this.botTypesTotalLetter = []
     }
 
     draw(){
@@ -132,8 +127,6 @@ class MyType{
         this.restartFunc()
     }
     
-   
-
     initialize(){
         this.chart.innerHTML = ''
         this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
@@ -161,19 +154,18 @@ class MyType{
         this.word = document.querySelectorAll('.word')
         this.para.style.marginTop = null
         this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
-        this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+        this.postionLineForBot(this.botTypesTotalLetter[this.currentLetterForBot])
         clearInterval(this.myTimer)
-        clearInterval(this.botTime)
         clearInterval(this.letterInterval)
         
         window.addEventListener('resize',()=>{
-            this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+            this.postionLineForBot(this.botTypesTotalLetter[this.currentLetterForBot])
             this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
             this.scrollPara(this.paraContainer,this.word[this.currentWordIndex])
         })
         
         window.addEventListener('scroll',()=>{
-            this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+            this.postionLineForBot(this.botTypesTotalLetter[this.currentLetterForBot])
             this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
         })
     }
@@ -272,30 +264,39 @@ class MyType{
         })
 
         window.addEventListener('keydown',(e)=>{
-            if(e.key == 'Shift'){
+            if(e.key == 'Control'){
                 this.restart.click()
             }
         })
     }
 
     setAutoBot(){
+        
         if(this.botSpeed > 0){
-            clearInterval(this.letterInterval)
+
+            let botTotalTypedWordNum = (this.botSpeed/60)*this.totalTime
+            let botTotalTypedWord = [...this.word].slice(0,botTotalTypedWordNum)
+            this.botTypesTotalLetter = botTotalTypedWord.map(el=>[...el.children]).reduce((prev, next)=>prev.concat(next));
+            let botTypesTotalLetterNum = this.botTypesTotalLetter.length
+            let changeLetterTime = this.totalTime/botTypesTotalLetterNum
+
             this.lineForBot.classList.remove('hidden')
+
             let decrease = ()=>{
                 if(this.countTime > 0){
-                    this.postionLineForBot(this.word[this.currentWordForBot].children[this.currentLetterForBot])
+                    this.postionLineForBot(this.botTypesTotalLetter[this.currentLetterForBot])
                     this.currentLetterForBot++
                 }
                 
                 if(this.countTime == 0){
-                    clearInterval(this.botTime)
+                    clearInterval(this.letterInterval)
+                    this.lineForBot.classList.add('hidden')
                 }
             }
 
             decrease()
             
-            this.letterInterval =  setInterval(decrease,(this.timeForOneWordCross/this.word[this.currentWordForBot].children.length)*1000)
+            this.letterInterval =  setInterval(decrease,changeLetterTime*1000)
         }
     }
 
@@ -373,13 +374,10 @@ class MyType{
     }
 
     chartFunc(){
-
         this.chart.innerHTML =  `<canvas id="myChart"></canvas>`
-
         const ctx = document.getElementById('myChart');
         const DATA_COUNT = +this.totalTime+1;
         const labels = [];
-
         let step = 1
 
         if(Math.round(+this.totalTime/60) >= 1){
@@ -395,12 +393,10 @@ class MyType{
 
         const wpmGraphData = [];
         const rawwpmGraphData = [];
-        // const instantWPMData = [];
 
         for (let i = 0; i < this.wpmGraphData.length; i = i + step) {
              wpmGraphData.push(this.wpmGraphData[i]);
              rawwpmGraphData.push(this.rawwpmGraphData[i])
-            //  instantWPMData.push(this.instantWPMData[i])
         }
 
         const data = {
@@ -414,20 +410,12 @@ class MyType{
                 fill: false,
                 tension: 0.4
             },
-            // {
-            //     label: 'Instant WPM',
-            //     data: instantWPMData,
-            //     borderWidth: 2,
-            //     borderColor: strokColor2,
-            //     fill: false,
-            //     tension: 0.4
-            // },
             {
                 label: 'raw',
                 data: rawwpmGraphData,
                 borderWidth: 2,
-                borderColor: 'red',
-                fill: false,
+                borderColor: strokColor2,
+                fill: true,
                 tension: 0.4
             },
         ]
@@ -445,7 +433,7 @@ class MyType{
             },
             },
             interaction: {
-            intersect: false,
+                intersect: true,
             },
             scales: {
                 x: {
@@ -461,7 +449,6 @@ class MyType{
                     text: 'w p m'
                     },
                     suggestedMin: 0,
-                    // suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...instantWPMData),Math.max(...rawwpmGraphData)) + 20
                     suggestedMax: Math.max(Math.max(...wpmGraphData),Math.max(...rawwpmGraphData)) + 20
                 }
             }
@@ -521,29 +508,10 @@ class MyType{
         localStorage.setItem(rank,JSON.stringify(rankArray))
     }
 
-    botTimer(){
-        
-        let timeDecrase = ()=>{
-            if(this.countTime > 0){
-                this.currentLetterForBot = 0
-                this.currentWordForBot++
-                this.setAutoBot()
-            }
-            
-            if(this.countTime == 0){
-                clearInterval(this.botTime)
-            }
-        }
-        
-        this.botTime =  setInterval(timeDecrase,this.timeForOneWordCross*1000)
-    }
-
     timer(){
         let timeDecrase = ()=>{
             if(this.countTime > 0){
                 this.countTime--
-                this.instantWPM()
-                this.rightWordPerSec = 0
                 this.time.innerHTML = this.manageTime(this.countTime)
                 this.resultPerSec()
             }
@@ -614,10 +582,15 @@ class MyType{
         }
     }
 
-    postionLineForBot(word){
-        if(word){
-            this.lineForBot.style.top = word.offsetTop + 'px'
-            this.lineForBot.style.left = word.offsetLeft + 'px'
+    postionLineForBot(letter){
+        if(this.botTypesTotalLetter.length == 0){
+            this.lineForBot.style.top = this.word[0].children[0].offsetTop + 'px'
+            this.lineForBot.style.left = this.word[0].children[0].offsetLeft + 'px'
+        }else{
+            if(letter){
+                this.lineForBot.style.top = letter.offsetTop + 'px'
+                this.lineForBot.style.left = letter.offsetLeft + 'px'
+            }
         }
     }
 
@@ -690,9 +663,6 @@ class MyType{
 
                 if(this.isTypingStart && this.isSetInterval){
                     this.timer()
-                    if(this.botSpeed > 0){
-                        this.botTimer()
-                    }
                 }
     
                 this.isSetInterval = false
@@ -703,7 +673,6 @@ class MyType{
               ){
                 
                 this.addmoreMoreText()
-                this.countable = true
                 
                 if(
                     this.word[this.currentWordIndex] && 
@@ -716,11 +685,6 @@ class MyType{
 
                     if([...this.word[this.currentWordIndex].children].every(el=>el.classList.contains('right'))){
                         this.word[this.currentWordIndex].classList.add('correct-word')
-
-                        if(this.hasCounted == false){
-                            this.rightWordPerSec++
-                        }
-
                     }else{
                         this.word[this.currentWordIndex].classList.add('wrong-word')
                     }
@@ -730,7 +694,6 @@ class MyType{
                     this.currentLetterIndex = -1
                     this.currentWordIndex++
                     this.extraLetter = 0
-                    this.hasCounted = false
                 }
             }
         
@@ -812,18 +775,6 @@ class MyType{
         this.wpmGraphData.push(Math.round((rightWord/(this.totalTime-this.countTime))*60))
         this.rawwpmGraphData.push(Math.round((allWord/(this.totalTime-this.countTime))*60))
         this.wpmResultPerSec.innerHTML = this.wpmGraphData[this.wpmGraphData.length-1] + 'wpm'
-    }
-
-    instantWPM(){
-        if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
-            if(this.countable){
-                this.rightWordPerSec++
-                this.countable = false
-                this.hasCounted = true
-            }
-        }
-
-        this.instantWPMData.push(Math.round((this.rightWordPerSec/1)*60))
     }
 
     result(){

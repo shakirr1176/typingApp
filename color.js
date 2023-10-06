@@ -2,6 +2,7 @@
 let colorChange = document.querySelector('.color-change')
 
 let primaryColors = ['#e2b714','#28ae60','#f57900','#ef2929','#ad7fa8','#3465a4']
+let bgColors = ['#8d5802','#2f3537','#5b3465','#204a88','#545652','#493636','#322a2a','#451952','#186F65','#5F264A','#37306B','#2A0944','#313552','#4A403A','#214252','#511845','#1E5128']
 
 if(localStorage.getItem('p-color')){
     document.documentElement.style.setProperty('--primary', localStorage.getItem('p-color'))
@@ -25,8 +26,8 @@ if(colorChange){
     let bringColor = colorChange.querySelector('.bring-color')
     let allColor = colorChange.querySelector('.all-color')
     let primaryColorTem = colorChange.querySelector('.primary-color-tem')
+    let bgColorTem = colorChange.querySelector('.bg-color-tem')
     let pColorChang = colorChange.querySelector('.p-color-chang')
-    let bgColorChang = colorChange.querySelector('.bg-color-chang')
 
     const componentToHex = (c) => {
         const hex = c.toString(16);
@@ -50,14 +51,6 @@ if(colorChange){
             pColorChang.value = rgbToHex(...onloadColor)
         }
     }
-
-    bgColorChang.value = localStorage.getItem('bgGex') ? localStorage.getItem('bgGex') : '#000000'
-
-    bgColorChang.addEventListener('change',()=>{
-        localStorage.setItem('bgGex',bgColorChang.value)
-        let color = hexToCssHsl(bgColorChang.value)
-        setColorToDoc(color)
-    })
 
     function setColorToDoc(color){
         rootName.forEach((el,i)=>{
@@ -102,7 +95,23 @@ if(colorChange){
         primaryColorTem.append(div)
     })
 
+    bgColors.forEach(el=>{
+        let div = document.createElement('div')
+        div.className = 'color-con'
+        div.innerHTML = ` <div class="bg-color" style="background:${el}"></div>`
+        bgColorTem.append(div)
+    })
+
     let pColor = document.querySelectorAll('.p-color')
+    let bgColor = document.querySelectorAll('.bg-color')
+
+    bgColor.forEach((el,i)=>{
+        el.addEventListener('click',()=>{
+            localStorage.setItem('bgGex',bgColors[i])
+            let color = hexToCssHsl(bgColors[i])
+            setColorToDoc(color)
+        })
+    })
 
     pColor.forEach(el=>{
         el.addEventListener('click',()=>{
@@ -136,4 +145,3 @@ if(colorChange){
     })
 
 }
-

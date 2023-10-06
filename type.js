@@ -31,7 +31,7 @@ class MyType{
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
         this.isNext = false;
-        this.remainWord = 50
+        this.remainWord = 40
         this.currentWordIndex = 0
         this.currentLetterIndex = -1
         this.wpmGraphData = []
@@ -276,16 +276,19 @@ class MyType{
 
             let botTotalTypedWordNum = (this.botSpeed/60)*this.totalTime
             let botTotalTypedWord = [...this.word].slice(0,botTotalTypedWordNum)
+
+            let timeForExistingWord = (60/this.botSpeed)*botTotalTypedWord.length
+
             this.botTypesTotalLetter = botTotalTypedWord.map(el=>[...el.children]).reduce((prev, next)=>prev.concat(next));
             let botTypesTotalLetterNum = this.botTypesTotalLetter.length
-            let changeLetterTime = this.totalTime/botTypesTotalLetterNum
-
+            let changeLetterTime = timeForExistingWord/botTypesTotalLetterNum
             this.lineForBot.classList.remove('hidden')
 
             let decrease = ()=>{
                 if(this.countTime > 0){
                     this.postionLineForBot(this.botTypesTotalLetter[this.currentLetterForBot])
                     this.currentLetterForBot++
+                    this.addmoreMoreTextForBot()
                 }
                 
                 if(this.countTime == 0){
@@ -458,11 +461,24 @@ class MyType{
         let aa = new Chart(ctx,config)
     }
 
+    addText(){
+        this.shuffleArray(this.moreText)
+        this.para.innerHTML += this.moreText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
+        this.word = document.querySelectorAll('.word')
+        clearInterval(this.letterInterval)
+        this.setAutoBot()
+    }
+
     addmoreMoreText(){
         if(this.word.length - this.currentWordIndex < this.remainWord){
-            this.shuffleArray(this.moreText)
-            this.para.innerHTML += this.moreText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
-            this.word = document.querySelectorAll('.word')
+            this.addText()
+        }
+    }
+
+    addmoreMoreTextForBot(){
+        let totalLetter = [...this.word].map(el=>[...el.children]).reduce((prev, next)=>prev.concat(next)).length
+        if(totalLetter - this.currentLetterForBot < this.remainWord ){
+            this.addText()
         }
     }
 

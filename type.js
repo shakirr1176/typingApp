@@ -125,6 +125,7 @@ class MyType{
         this.selectTime()
         this.startTyping()
         this.restartFunc()
+        this.autobotvalue
     }
     
     initialize(){
@@ -171,13 +172,13 @@ class MyType{
     }
 
     saveBotWPM(){
-        if(this.autobotInput.value != 0 && this.autobotInput.value <= 1000 && this.autobotInput.value.match(/^[0-9]+$/) !== null){
+        if(this.autobotInput.value != 0 && this.autobotInput.value <= 500 && this.autobotInput.value.match(/^[0-9]+$/) !== null){
             this.isautobotPopUpOpen = false
             this.autobotPopUp.classList.add('hidden')
             this.botSpeed = this.autobotInput.value
             this.timeForOneWordCross = 60/this.botSpeed
             this.botSpeedDiv.innerHTML = this.botSpeed + 'wpm' + '(Bot)' 
-            this.autobotInput.value = ''
+            this.autobotvalue = this.autobotInput.value
         }
     }
 
@@ -188,6 +189,7 @@ class MyType{
             this.isautobotPopUpOpen = false
             this.botSpeed = 0
             this.botSpeedDiv.innerHTML = ''
+            this.autobotvalue = 60
         })
 
         this.botSaveBtn.addEventListener('click',()=>{
@@ -198,9 +200,9 @@ class MyType{
             if(!this.isTypingStart){
                 this.autobotPopUp.classList.remove('hidden')
                 this.isautobotPopUpOpen = true
-                this.autobotInput.value = ''
                 this.autobotError.innerHTML = ''
                 this.autobotLabel.innerHTML = ''
+                this.autobotInput.value = this.autobotvalue ? this.autobotvalue : 60
             }
         })
 
@@ -216,7 +218,7 @@ class MyType{
             this.autobotError.classList.add('hidden')
             if(this.autobotInput.value.match(/^[0-9]+$/) !== null){
                 
-                if(this.autobotInput.value <= 1000){
+                if(this.autobotInput.value <= 500){
                     this.autobotLabel.innerHTML = this.autobotInput.value + 'WPM'
                     if(this.autobotInput.value <= 0){
                         this.autobotError.classList.remove('hidden')
@@ -224,7 +226,7 @@ class MyType{
                     }
                 }else{
                     this.autobotError.classList.remove('hidden')
-                    this.autobotError.innerHTML = 'WPM should be less than 1000'
+                    this.autobotError.innerHTML = 'WPM should be less than 500'
                 }
             }else{
                 this.autobotLabel.innerHTML = ''

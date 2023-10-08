@@ -1,4 +1,7 @@
 import { manageTime,timeMange } from "./data.js"
+import text from "./text.js";
+
+let filterText = text.text.toLocaleLowerCase().split(' ').filter(el=>el.length <= 8)
 
 let selectTime = document.querySelector('.slect-time')
 timeMange.forEach(el => {
@@ -25,8 +28,10 @@ class MyType{
     }
 
     declaration(){
-        this.moreText = 'number/here/because/right/system/well/out/school/another/course/mean/without/they/play/begin/say/seem/or/mean/there/lead/over/from/interest/then/much/we/any/get/line/when/school/there/think/present/long/last/and/just/each/so/get/fact/much/or/in/order/follow/each/see/this/work/now/group/form/so/life/seem/off/when/see/last/high/few/those/so/against/want/seem/open/old/against/point/person/during/just/such/play/must/between/end/know/if/to/very/long/must/who/like/off/right/come/if/way/we/word/eye/but/want/end/feel/old/good/over/increase/old/such/life/will/word/form/use/head/what/most/seem/even/without/again/who/as/around/give/where/just/look/public/hold/than/most/consider/as/new/a/she/we/through/those/by/than/set/where/about/govern/write/good/some/long/before/like/consider/before/man/do/large/possible/stand/first/a/say/under/people/without/turn/if/feel/plan/also/ask/then/too/might/old/follow/give/open/up/after/system/must/off/seem/write/most/part/present/first/call/between/these/of/right/when/with/last/she/one/develop/come/there/without/stand/before/still/if/make/seem/follow/call/state/down/after/order/help/fact/another/form/see/many/program/since/early/long/public'.split('/')
-        this.allText = this.moreText
+        this.allText = filterText
+
+        this.moreText = this.allText
+        this.sliceNumber = 200
         this.para = document.querySelector('.para')
         this.paraContainer = document.querySelector('.para-container')
         this.extraKey = ['Control','Shift','Tab','Alt','CapsLock','F2','Insert','Home','PageUp','PageDown','Enter','ContextMenu','ArrowDown','ArrowLeft','ArrowRight','ArrowUp','End','\\','Backspace']
@@ -113,6 +118,7 @@ class MyType{
         this.botRemoveBtn  = document.querySelector('.bot-remove-btn')
         this.botSaveBtn  = document.querySelector('.bot-save-btn')
         this.botTypesTotalLetter = []
+        this.isNewText = true
     }
 
     draw(){
@@ -130,9 +136,10 @@ class MyType{
     
     initialize(){
         this.chart.innerHTML = ''
-        this.para.innerHTML = this.allText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
+        this.para.innerHTML = this.allText.slice(0,this.sliceNumber).join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
         this.showResult.closest('.result-container').classList.add('hidden')
         this.line.classList.add('line-animation')
+        this.restartAfterWin.innerHTML = 'Restart'
         this.typeInput.value = ''
         this.total_typed_word.innerHTML = 0
         this.right_word.innerHTML = 0
@@ -242,21 +249,31 @@ class MyType{
         })
     }
 
+    noShuffle(){
+        this.declaration()
+        this.allText = this.forAfterRestart ? this.forAfterRestart : this.allText
+        this.initialize()
+    }
+
+    hasShuffle(){
+        this.declaration()
+        this.shuffleArray(this.allText)
+        this.forAfterRestart = this.allText
+        this.initialize()
+    }
+
     restartFunc(){
         this.restart.addEventListener('click',(e)=>{
-            this.declaration()
-            this.shuffleArray(this.allText)
-            this.forAfterRestart = this.allText
-            this.initialize()
+            if(this.isNewText){
+                this.hasShuffle()
+            }else{
+                this.noShuffle()
+            }
         })
 
         this.restartAfterWin.addEventListener('click',(e)=>{
-            if(this.countTime === 0){
-                this.rankFun()
-                this.declaration()
-                this.allText = this.forAfterRestart ? this.forAfterRestart : this.allText
-                this.initialize()
-            }
+            this.rankFun()
+            this.noShuffle()
         })
 
         this.nameInput.addEventListener('keypress',(e)=>{
@@ -465,7 +482,7 @@ class MyType{
 
     addText(){
         this.shuffleArray(this.moreText)
-        this.para.innerHTML += this.moreText.join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
+        this.para.innerHTML += this.moreText.slice(0,this.sliceNumber).join(' ').split(' ').map(el=>`<span class="word">${el.split('').map(x=>`<span>${x}</span>`).join('')}</span>`).join('')
         this.word = document.querySelectorAll('.word')
         clearInterval(this.letterInterval)
         this.setAutoBot()
@@ -494,6 +511,18 @@ class MyType{
                 })
             }
         }
+    }
+
+    changeRestartBtnText(){
+        this.nameInput.addEventListener('input',()=>{
+            if(this.countTime == 0){
+                if(this.nameInput.value.trim() !== ''){
+                    this.restartAfterWin.innerHTML = 'Save and Restart'
+                }else{
+                    this.restartAfterWin.innerHTML = 'Restart'
+                }
+            }
+        })
     }
 
     specificTimeFunc = (rankArray,rank)=>{
@@ -539,15 +568,13 @@ class MyType{
                 this.isType = false
                 
                 if(this.prev == ''){
-                    this.nameInput.classList.add('hidden') 
-                    this.restartAfterWin.innerHTML = 'Restart'
+                    this.nameInput.classList.add('hidden')
                 }else{
                     this.nameInput.classList.remove('hidden') 
-                    this.restartAfterWin.innerHTML = 'Save and restart'
                 }
                 
                 this.showResult.closest('.result-container').classList.remove('hidden')
-                
+                this.changeRestartBtnText()
                 this.result()
                 this.chartFunc()
                 clearInterval(this.myTimer)
@@ -648,13 +675,13 @@ class MyType{
             !this.extraKey.includes(e.key)
             && e.key.length == 1 && this.isType && !this.isPopUpOpen && !this.isautobotPopUpOpen
             ){  
-
                 if(!this.isTypingStart){
                     this.setAutoBot()
                 }
 
                 this.line.classList.remove('line-animation')
                 this.isTypingStart = true
+                this.isNewText = false
                 this.typeInput.focus()
 
                 if( currentWord &&

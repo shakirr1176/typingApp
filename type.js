@@ -402,7 +402,7 @@ class MyType{
         const labels = [];
         let step = 1
 
-        if(Math.round(+this.totalTime/60) >= 1){
+        if(Math.round(+this.totalTime/60) > 1){
             step = Math.round(+this.totalTime/60)+1
         }
 
@@ -412,7 +412,7 @@ class MyType{
         for (let i = 1; i < DATA_COUNT; i = i + step) {
             labels.push(i.toString());
         }
-
+        
         const wpmGraphData = [];
         const rawwpmGraphData = [];
 

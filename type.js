@@ -585,13 +585,9 @@ class MyType{
     }
 
     shuffleArray(array) {
-        let len = array.length,
-            currentIndex;
-        for (currentIndex = len - 1; currentIndex > 0; currentIndex--) {
-            let randIndex = Math.floor(Math.random() * (currentIndex + 1) );
-            var temp = array[currentIndex];
-            array[currentIndex] = array[randIndex];
-            array[randIndex] = temp;
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
     }
 

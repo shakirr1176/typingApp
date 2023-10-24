@@ -6,12 +6,9 @@
 
 
 :root{
-    --word-size : 45px;
-    --word-padding: 5.7px;
+    --word-padding: 5px;
     --primary: #28ae60;
 
-    
-    
     --commonColor-h: 225;
     --commonColor-s: 5%;
     --commonColor-l: 16%;
@@ -97,7 +94,6 @@ a:not(.leaderboard,.logo-con){
 }
 
 .para-container{
-    height: calc(var(--word-size) * 4);
     overflow: hidden;
     position: relative;
     margin-top: 16px;

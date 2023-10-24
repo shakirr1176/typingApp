@@ -79,7 +79,10 @@ class MyType{
 
         this.totalTime = localStorage.getItem('time') ? localStorage.getItem('time') : timeMange[1].time
         this.countTime = this.totalTime
-        this.measure = 45
+
+        this.measure
+        this.lineNum = 4
+
         this.scrollUnit = 0
         this.myTimer
         this.letterInterval
@@ -160,6 +163,8 @@ class MyType{
 
         this.time.innerHTML = this.manageTime(this.countTime)
         this.word = document.querySelectorAll('.word')
+        this.measure = getComputedStyle(this.word[0]).height.slice(0,-2)
+        this.paraContainer.style.height = this.measure * this.lineNum + 'px'
         this.para.style.marginTop = null
         this.postionLine(this.word[this.currentWordIndex].children[this.currentLetterIndex],this.word[this.currentWordIndex])
         this.postionLineForBot(this.botTypesTotalLetter[this.currentLetterForBot])

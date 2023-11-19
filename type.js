@@ -125,6 +125,7 @@ class MyType{
     }
 
     draw(){
+        this.isRestartProcess = false
         this.botSpeed = 0
         this.shuffleArray(this.allText)
         this.forAfterRestart = this.allText
@@ -267,8 +268,32 @@ class MyType{
         this.initialize()
     }
 
+    fade(){
+
+        let fadeEvent = ()=>{
+            // this.isRestartProcess = false
+            this.paraContainer.classList.remove('fade')
+        }
+        
+        // if(this.isRestartProcess == false){
+        //     console.log('ad');
+            this.paraContainer.classList.add('fade')
+        // }
+
+        // this.paraContainer.addEventListener('animationstart',()=>{
+        //     if(this.isRestartProcess == true){
+        //         this.paraContainer.classList.remove('fade')
+        //     }
+        //     this.isRestartProcess = true
+        // })
+
+        this.paraContainer.addEventListener('animationend',fadeEvent)
+        
+    }
+
     restartFunc(){
         this.restart.addEventListener('click',(e)=>{
+            this.fade()
             if(this.isNewText){
                 this.hasShuffle()
             }else{
@@ -277,6 +302,7 @@ class MyType{
         })
 
         this.restartAfterWin.addEventListener('click',(e)=>{
+            this.fade()
             this.rankFun()
             this.noShuffle()
         })

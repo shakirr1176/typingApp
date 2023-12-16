@@ -3,7 +3,7 @@ let colorChange = document.querySelector('.color-change')
 
 let primaryColors = ['#e2b714','#28ae60','#f57900','#ef2929','#ad7fa8','#3465a4']
 
-let bgColors = ['#1A374D','#2f3537','#0B212F','#06283D','#545652','#493636','#322a2a','#451952','#186F65','#5F264A','#37306B','#2A0944','#313552','#4A403A','#214252','#181D50']
+let bgColors = ['#323437','#1A374D','#2f3537','#0B212F','#06283D','#545652','#493636','#322a2a','#451952','#186F65','#5F264A','#37306B','#2A0944','#313552','#4A403A','#214252','#181D50']
 
 if(localStorage.getItem('p-color')){
     document.documentElement.style.setProperty('--primary', localStorage.getItem('p-color'))

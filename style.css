@@ -133,7 +133,50 @@ a:not(.leaderboard,.logo-con){
     transition: all 300ms linear;
     display: inline-block;
     text-align: center;
+    position: relative;
+    outline: none;
+    border: 2px solid transparent;
 }
+
+.tool-tip{
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 10px;
+    background: black;
+    color: white;
+    border-radius: 5px;
+    display: none;
+    white-space: nowrap
+}
+.tool-tip > span{
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%,50%);
+    background: black;
+    width: 10px;
+    height: 10px;
+    rotate: 45deg;
+    transform-origin: bottom;
+}
+
+.restart:focus{
+    display: block;
+    transition: none;
+    border-color: var(--primary);
+}
+
+.restart:focus .tool-tip{
+    display: block;
+}
+
+.restart:hover .tool-tip{
+    display: block;
+}
+
 .restart-after-win{
     width: 100%;
     background: hsl(var(--commonColor-h), var(--commonColor-s), var(--othercommonColor-l));
@@ -537,6 +580,7 @@ tbody tr:nth-child(2n+1){
     justify-content: center;
     margin-top: 20px;
     flex-wrap: wrap;
+    transition: none;
 }
 
 .paggination button{

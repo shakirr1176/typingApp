@@ -102,7 +102,6 @@ class MyType{
         this.popUpInput = document.querySelector('.pop-up-input')
         this.timeLabel = document.querySelector('.time-label')
         this.popUpError = document.querySelector('.pop-up-error')
-
         this.wpmResultPerSec = document.querySelector('.wpm-result-per-sec')
         this.isPopUpOpen = false
         this.chart = document.querySelector('.chart')
@@ -271,21 +270,10 @@ class MyType{
     fade(){
 
         let fadeEvent = ()=>{
-            // this.isRestartProcess = false
             this.paraContainer.classList.remove('fade')
         }
         
-        // if(this.isRestartProcess == false){
-        //     console.log('ad');
-            this.paraContainer.classList.add('fade')
-        // }
-
-        // this.paraContainer.addEventListener('animationstart',()=>{
-        //     if(this.isRestartProcess == true){
-        //         this.paraContainer.classList.remove('fade')
-        //     }
-        //     this.isRestartProcess = true
-        // })
+        this.paraContainer.classList.add('fade')
 
         this.paraContainer.addEventListener('animationend',fadeEvent)
         
@@ -299,6 +287,7 @@ class MyType{
             }else{
                 this.noShuffle()
             }
+            this.restart.blur()
         })
 
         this.restartAfterWin.addEventListener('click',(e)=>{
@@ -314,8 +303,9 @@ class MyType{
         })
 
         window.addEventListener('keydown',(e)=>{
-            if(e.key == 'Control'){
-                this.restart.click()
+            if(e.key == 'Tab'){
+                e.preventDefault();
+                this.restart.focus();
             }
         })
     }

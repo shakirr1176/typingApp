@@ -252,7 +252,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
             
                         tr.innerHTML =  `<td>${i+nextPrevValue+1 == 1 ? '<img class="crown" src="icons8-crown-50.png" alt="">' : i+nextPrevValue+1}</td>
                                         <td>${el.name ? el.name : ''}</td>
-                                        <td>${el.date || el.date == '-' ? el.date : ''}</td>
+                                        <td>${el.date ? el.date : '-'}</td>
                                         <td>${el.wpm || el.wpm == 0 ? el.wpm : ''}</td>
                                         <td>${el.rawWPM || el.rawWPM == 0 ? el.rawWPM : ''}</td>
                                         <td>${el.accuracy || el.accuracy == 0 ? el.accuracy : ''}%</td>

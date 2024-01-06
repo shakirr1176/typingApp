@@ -58,7 +58,7 @@ class MyType{
         this.manageTime = manageTime
         this.rankArray = timeMange
         this.historyArray = localStorage.getItem('history') ? JSON.parse(localStorage.getItem('history')) : []
-        this.historyNum = 50
+        this.historyNum = 25
         this.timeOption = document.querySelectorAll('.times')
 
         this.prev

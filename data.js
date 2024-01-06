@@ -16,7 +16,8 @@ export let timeMange = [
     }
 ]
 
-timeMange = localStorage.getItem('timeArray') ? JSON.parse(localStorage.getItem('timeArray')) : timeMange
+
+// timeMange = localStorage.getItem('timeArray') ? JSON.parse(localStorage.getItem('timeArray')) : timeMange
 
 timeMange.forEach(el=>{
     el.name = 'rank'+el.time

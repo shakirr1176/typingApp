@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rank</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html">Go to test</a>
+        </div>
+        <div class="main">
+            <h1 class="rank-title">History</h1>
+            <div id="history-table">
+                <div class="table-container">
+                    <table cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th>date</th>
+                                <th>wpm</th>
+                                <th>raw</th>
+                                <th>accuracy</th>
+                                <th>right word</th>
+                                <th>wrong word</th>
+                                <th>time</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="color.js"></script>
+    <script>
+        let tbody = document.querySelector('#history-table tbody')
+        let tableData = localStorage.getItem('history') ? JSON.parse(localStorage.getItem('history')) : []
+
+        if(tableData && tableData.length != 0){
+            
+            tbody.innerHTML = ''
+    
+            tableData.forEach((el,i)=>{
+                let tr = document.createElement('tr')
+
+                tr.innerHTML =  `<td>${el.date ? el.date : '-'}</td>
+                                <td>${el.wpm || el.wpm == 0 ? el.wpm : '-'}</td>
+                                <td>${el.rawWPM || el.rawWPM == 0 ? el.rawWPM : '-'}</td>
+                                <td>${el.accuracy || el.accuracy == 0 ? el.accuracy : '-'}%</td>
+                                <td>${el.rightWord || el.rightWord == 0 ? el.rightWord : '-'}</td>
+                                <td>${el.wrongWord || el.wrongWord == 0 ? el.wrongWord : '-'}</td>
+                                <td>${el.time ? el.time : '-'}</td>
+                                `
+                tbody.append(tr)
+            })
+        }else{
+            tbody.innerHTML = '<td colspan="7" class="no-data">No Data</td>'   
+        }
+    </script>
+</body>
+</html>

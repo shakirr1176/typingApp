@@ -2,7 +2,6 @@ import { manageTime,timeMange } from "./data.js"
 import text from "./text.js";
 
 let filterText = text.text.toLocaleLowerCase().split(' ').filter(el=>el.length <= 8)
-
 let selectTime = document.querySelector('.slect-time')
 timeMange.forEach(el => {
     selectTime.innerHTML += `<div data-time="${el.time}" class="times">${manageTime(el.time)}</div>`
@@ -58,6 +57,8 @@ class MyType{
         this.acurracyDiv = document.querySelector('.acurracy')
         this.manageTime = manageTime
         this.rankArray = timeMange
+        this.historyArray = localStorage.getItem('history') ? JSON.parse(localStorage.getItem('history')) : []
+        this.historyNum = 50
         this.timeOption = document.querySelectorAll('.times')
 
         this.prev
@@ -121,6 +122,20 @@ class MyType{
         this.botSaveBtn  = document.querySelector('.bot-save-btn')
         this.botTypesTotalLetter = []
         this.isNewText = true
+        this.months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ];
     }
 
     draw(){
@@ -547,45 +562,10 @@ class MyType{
     }
 
     specificTimeFunc = (rankArray,rank)=>{
-        const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-        ];
-
-        function control() {
-            const now = new Date();
-            const month = now.getMonth();
-            let hours = now.getHours();
-            const minutes = now.getMinutes();
-            const year = now.getFullYear();
-            let ampm = 'AM';
-
-            if(now.getHours() > 12){
-                hours = now.getHours() - 12
-                ampm = 'PM'
-            }
-            
-            return  `${now.getDate().toString().padStart(2, "0")} ${
-                    months[month]
-                } ${year} ${hours.toString().padStart(2, "0")}:${minutes
-                    .toString()
-                    .padStart(2, "0")} ${ampm}`
-    
-        }
 
         let currentObj = {
             name: this.nameInput.value,
-            date: control(),
+            date: this.dateFunc(),
             wpm: this.finalResult,
             rawWPM: this.rawResult,
             accuracy: this.accuracy,
@@ -622,11 +602,55 @@ class MyType{
                 this.changeRestartBtnText()
                 this.result()
                 this.chartFunc()
+                this.historyCollect()
                 clearInterval(this.myTimer)
             }
         }
 
         this.myTimer =  setInterval(timeDecrase,1000)
+    }
+
+    dateFunc() {
+        const now = new Date();
+        const month = now.getMonth();
+        let hours = now.getHours();
+        const minutes = now.getMinutes();
+        const year = now.getFullYear();
+        let ampm = 'AM';
+
+        if(now.getHours() > 12){
+            hours = now.getHours() - 12
+            ampm = 'PM'
+        }
+
+        if(hours == 0){
+            hours = 12
+        }
+        
+        return  `${now.getDate().toString().padStart(2, "0")} ${
+                this.months[month]
+            } ${year} ${hours.toString().padStart(2, "0")}:${minutes
+                .toString()
+                .padStart(2, "0")} ${ampm}`
+
+    }
+
+    historyCollect(){
+
+        let currentObj = {
+            date: this.dateFunc(),
+            wpm: this.finalResult,
+            rawWPM: this.rawResult,
+            accuracy: this.accuracy,
+            rightWord: this.rightWord,
+            wrongWord: this.currentWordIndex+1 - this.rightWord,
+            time: this.totalTime
+        }
+
+        this.historyArray.unshift(currentObj)
+        this.historyArray = this.historyArray.slice(0,this.historyNum)
+
+        localStorage.setItem('history',JSON.stringify(this.historyArray))
     }
 
     shuffleArray(array) {

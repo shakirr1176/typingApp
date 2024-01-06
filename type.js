@@ -547,9 +547,45 @@ class MyType{
     }
 
     specificTimeFunc = (rankArray,rank)=>{
+        const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ];
+
+        function control() {
+            const now = new Date();
+            const month = now.getMonth();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const year = now.getFullYear();
+            let ampm = 'AM';
+
+            if(now.getHours() > 12){
+                hours = now.getHours() - 12
+                ampm = 'PM'
+            }
+            
+            return  `${now.getDate().toString().padStart(2, "0")} ${
+                    months[month]
+                } ${year} ${hours.toString().padStart(2, "0")}:${minutes
+                    .toString()
+                    .padStart(2, "0")} ${ampm}`
+    
+        }
 
         let currentObj = {
             name: this.nameInput.value,
+            date: control(),
             wpm: this.finalResult,
             rawWPM: this.rawResult,
             accuracy: this.accuracy,
@@ -557,19 +593,7 @@ class MyType{
             wrongWord: this.currentWordIndex+1 - this.rightWord
         }
 
-        if(rankArray){
-            let hasAlready = rankArray.find(o=>o.name.trim('') == currentObj.name.trim())
-            if(hasAlready == undefined){
-                rankArray.push(currentObj)
-            }else{ 
-                if((currentObj.wpm > hasAlready.wpm) || (currentObj.wpm == hasAlready.wpm && hasAlready.accuracy < currentObj.accuracy)){
-                    const i = rankArray.findIndex(x => x.name.trim('') === hasAlready.name.trim(''))
-                    rankArray[i] = currentObj
-                }
-            }
-        }else{
-            rankArray.push(currentObj)
-        }
+        rankArray.push(currentObj)
 
         localStorage.setItem(`isActiveFor${rank}`,'yes')
         localStorage.setItem(`activeObjFor${rank}`,JSON.stringify(currentObj))

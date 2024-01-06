@@ -246,12 +246,13 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
                         localStorage.setItem(currentTemple.storageName,JSON.stringify(allData))
                         tr.id = i+nextPrevValue+1
             
-                        if(activeRowObj && el.name == activeRowObj.name){
+                        if(activeRowObj && el.date == activeRowObj.date){
                             tr.classList.add('active-td')
                         }
             
                         tr.innerHTML =  `<td>${i+nextPrevValue+1 == 1 ? '<img class="crown" src="icons8-crown-50.png" alt="">' : i+nextPrevValue+1}</td>
-                                        <td class="td-max">${el.name ? el.name : ''}</td>
+                                        <td>${el.name ? el.name : ''}</td>
+                                        <td>${el.date || el.date == '-' ? el.date : ''}</td>
                                         <td>${el.wpm || el.wpm == 0 ? el.wpm : ''}</td>
                                         <td>${el.rawWPM || el.rawWPM == 0 ? el.rawWPM : ''}</td>
                                         <td>${el.accuracy || el.accuracy == 0 ? el.accuracy : ''}%</td>

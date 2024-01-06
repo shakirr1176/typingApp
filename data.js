@@ -29,6 +29,7 @@ let table = `<div class="table-container">
                         <tr>
                             <th>rank</th>
                             <th>name</th>
+                            <th>date</th>
                             <th>wpm</th>
                             <th>raw</th>
                             <th>accuracy</th>

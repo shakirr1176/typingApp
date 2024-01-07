@@ -93,6 +93,20 @@ a:not(.leaderboard,.logo-con,.history){
 }
 .header{
     padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn{
+    display: flex !important;
+    align-items: center;
+  
+}
+.btn svg{
+    width: 18px;
+    color: white;
+    margin-right: 10px;
 }
 .leaderboard > svg{
     color: hsl(var(--commonColor-h), var(--commonColor-s), var(--paggination));

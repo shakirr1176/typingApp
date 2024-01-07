@@ -92,7 +92,6 @@ class MyType{
         this.rawResult = 0
         this.restart = document.querySelector('.restart')
         this.restartAfterWin = document.querySelector('.restart-after-win')
-        this.typeInput = document.querySelector('.type-input')
         this.total_typed_word = document.querySelector('.total-typed-word')
         this.right_word = document.querySelector('.right-word-show')
         this.wrong_word = document.querySelector('.wrong-word-show')
@@ -158,7 +157,6 @@ class MyType{
         this.showResult.closest('.result-container').classList.add('hidden')
         this.line.classList.add('line-animation')
         this.restartAfterWin.innerHTML = 'Restart'
-        this.typeInput.value = ''
         this.total_typed_word.innerHTML = 0
         this.right_word.innerHTML = 0
         this.wrong_word.innerHTML = 0
@@ -747,7 +745,6 @@ class MyType{
                 this.line.classList.remove('line-animation')
                 this.isTypingStart = true
                 this.isNewText = false
-                this.typeInput.focus()
 
                 if( currentWord &&
                     currentWord.clientWidth < this.para.clientWidth-16 &&

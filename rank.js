@@ -32,7 +32,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
 
     if(currentTemple){
         let tableDiv = document.querySelector(`.${currentTemple.name}`)
-        let activeRowObj = localStorage.getItem(`activeObjFor${currentTemple.name}`) ? JSON.parse(localStorage.getItem(`activeObjFor${currentTemple.name}`)) : null
+        let activeRowObj = localStorage.getItem(`activeObjFor${currentTemple.date}`) ? JSON.parse(localStorage.getItem(`activeObjFor${currentTemple.date}`)) : null
         let allData = JSON.parse(localStorage.getItem(currentTemple.storageName)) ? JSON.parse(localStorage.getItem(currentTemple.storageName)) : []
         if(tableDiv){
 
@@ -55,7 +55,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
             if( activeRowObj && localStorage.getItem(`isActiveFor${currentTemple.storageName}`) &&
                 localStorage.getItem(`isActiveFor${currentTemple.storageName}`) == 'yes'
              ){
-                let crrPos = allData.findIndex(p=>p.name == activeRowObj.name)
+                let crrPos = allData.findIndex(p=>p.date == activeRowObj.date)
                 nextPrevValue = Math.floor(crrPos/limit)*limit
             }
 

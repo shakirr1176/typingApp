@@ -32,7 +32,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
 
     if(currentTemple){
         let tableDiv = document.querySelector(`.${currentTemple.name}`)
-        let activeRowObj = localStorage.getItem(`activeObjFor${currentTemple.date}`) ? JSON.parse(localStorage.getItem(`activeObjFor${currentTemple.date}`)) : null
+        let activeRowObj = localStorage.getItem(`activeObjFor${currentTemple.name}`) ? JSON.parse(localStorage.getItem(`activeObjFor${currentTemple.name}`)) : null
         let allData = JSON.parse(localStorage.getItem(currentTemple.storageName)) ? JSON.parse(localStorage.getItem(currentTemple.storageName)) : []
         if(tableDiv){
 
@@ -55,7 +55,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
             if( activeRowObj && localStorage.getItem(`isActiveFor${currentTemple.storageName}`) &&
                 localStorage.getItem(`isActiveFor${currentTemple.storageName}`) == 'yes'
              ){
-                let crrPos = allData.findIndex(p=>p.date == activeRowObj.date)
+                let crrPos = allData.findIndex(p=>p.id == activeRowObj.id)
                 nextPrevValue = Math.floor(crrPos/limit)*limit
             }
 
@@ -90,8 +90,6 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
                 localStorage.setItem('nextPrev'+currentTemple.name,nextPrevValue)
                 localStorage.setItem(`isActiveFor${currentTemple.storageName}`,'no')
                 controlNumberPagg()
-
-               
 
                 allTableSet()
             }
@@ -197,7 +195,6 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
                     pagginatioNumberDiv.append(el)
                 })
                 
-        
                 paggBtn = document.querySelectorAll('.pagg-btn')
 
                 activePaggNum(paggBtn)
@@ -238,15 +235,13 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
                 if(rankArray && rankArray.length != 0){
             
                     tbody.innerHTML = ''
-            
                     rankArray.forEach((el,i)=>{
                         let tr = document.createElement('tr')
                         el.id = i+nextPrevValue+1  
                         allData[el.id-1].id = i+nextPrevValue+1
                         localStorage.setItem(currentTemple.storageName,JSON.stringify(allData))
                         tr.id = i+nextPrevValue+1
-            
-                        if(activeRowObj && el.date == activeRowObj.date){
+                        if(activeRowObj && el.uniq && activeRowObj.uniq && el.uniq == activeRowObj.uniq){
                             tr.classList.add('active-td')
                         }
             

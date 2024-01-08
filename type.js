@@ -562,8 +562,9 @@ class MyType{
     specificTimeFunc = (rankArray,rank)=>{
 
         let currentObj = {
+            uniq: this.dateFunc()[0],
             name: this.nameInput.value,
-            date: this.dateFunc(),
+            date: this.dateFunc()[1],
             wpm: this.finalResult,
             rawWPM: this.rawResult,
             accuracy: this.accuracy,
@@ -613,6 +614,7 @@ class MyType{
         const month = now.getMonth();
         let hours = now.getHours();
         const minutes = now.getMinutes();
+        const sec = now.getSeconds();
         const year = now.getFullYear();
         let ampm = 'AM';
 
@@ -625,18 +627,17 @@ class MyType{
             hours = 12
         }
         
-        return  `${now.getDate().toString().padStart(2, "0")} ${
+        return  [year.toString()+month.toString()+hours.toString()+minutes.toString()+sec.toString(),`${now.getDate().toString().padStart(2, "0")} ${
                 this.months[month]
             } ${year} ${hours.toString().padStart(2, "0")}:${minutes
                 .toString()
-                .padStart(2, "0")} ${ampm}`
+                .padStart(2, "0")} ${ampm}`]
 
     }
 
     historyCollect(){
-
         let currentObj = {
-            date: this.dateFunc(),
+            date: this.dateFunc()[1],
             wpm: this.finalResult,
             rawWPM: this.rawResult,
             accuracy: this.accuracy,
@@ -644,7 +645,7 @@ class MyType{
             wrongWord: this.currentWordIndex+1 - this.rightWord,
             time: this.totalTime
         }
-
+        
         this.historyArray.unshift(currentObj)
         this.historyArray = this.historyArray.slice(0,this.historyNum)
 

@@ -823,7 +823,6 @@ class MyType{
                         if((this.ctrlBackCount > 1 || this.isNext) && this.currentWordIndex > 0){
                             currentWordsLetter = []
                             this.currentWordIndex--
-
                             if(this.word[this.currentWordIndex]){
                                 for (let i = this.word[this.currentWordIndex].children.length - 1; i >= 0; i--) {
                                     currentWordsLetter.push(this.word[this.currentWordIndex].children[i])
@@ -836,6 +835,8 @@ class MyType{
                         }
 
                         this.currentLetterIndex = -1
+                    }else{
+                        this.ctrlBackCount = 0
                     }
 
                     this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
@@ -872,7 +873,6 @@ class MyType{
                 if(this.isNext){
                     if(this.currentWordIndex > 0 && this.ctrlBackCount < 1){
                         this.currentWordIndex--
-                        console.log(this.currentWordIndex);
                         if(this.word[this.currentWordIndex]){
                             this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
                             this.word[this.currentWordIndex].removeAttribute('data-passedindex')

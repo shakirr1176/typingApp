@@ -49,6 +49,7 @@ class MyType{
         this.totalLetter = 0
         this.skility;
         this.extraLetter = 0
+        this.ctrlBackCount = 0;
         this.line = document.querySelector('.line')
         this.lineForBot = document.querySelector('.line-for-bot')
         this.time = document.querySelector('.time')
@@ -722,7 +723,6 @@ class MyType{
     startTyping(){
 
         window.addEventListener('keydown',(e)=>{
-
             if(e.key !== 'CapsLock'){
                 if(e.getModifierState('CapsLock')){
                     this.capLock.classList.remove('hide')
@@ -742,6 +742,8 @@ class MyType{
                 if(!this.isTypingStart){
                     this.setAutoBot()
                 }
+
+                this.ctrlBackCount = 0
 
                 this.line.classList.remove('line-animation')
                 this.isTypingStart = true
@@ -790,7 +792,7 @@ class MyType{
                     )
 
                     ){
-
+                        this.ctrlBackCount = 0
                     if([...this.word[this.currentWordIndex].children].every(el=>el.classList.contains('right'))){
                         this.word[this.currentWordIndex].classList.add('correct-word')
                     }else{
@@ -810,40 +812,72 @@ class MyType{
         
                 if(this.currentLetterIndex > -2){
         
-                    let currentWordsLetter = currentWord.children[this.currentLetterIndex]
+                    let currentWordsLetter = [currentWord.children[this.currentLetterIndex]]
                     
                     this.currentLetterIndex--
-                    this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
-                    
-                    if(currentWordsLetter){
-                        if(currentWordsLetter.classList.contains('extra')){
-                            currentWordsLetter.remove()
+
+                    if(e.ctrlKey && e.key === 'Backspace'){
+
+                        this.ctrlBackCount++
+                        
+                        if((this.ctrlBackCount > 1 || this.isNext) && this.currentWordIndex > 0){
+                            currentWordsLetter = []
+                            this.currentWordIndex--
+
+                            if(this.word[this.currentWordIndex]){
+                                for (let i = this.word[this.currentWordIndex].children.length - 1; i >= 0; i--) {
+                                    currentWordsLetter.push(this.word[this.currentWordIndex].children[i])
+                                }
+                            }
+                        }else{
+                            for (let i = this.currentLetterIndex; i >= 0; i--) {
+                                currentWordsLetter.push(currentWord.children[i])
+                            }
                         }
-            
-                        if(currentWordsLetter.classList.contains('wrong')){
-                            currentWordsLetter.classList.remove('wrong')
-                        }
-            
-                        if(currentWordsLetter.classList.contains('right')){
-                            currentWordsLetter.classList.remove('right')
-                        }
+
+                        this.currentLetterIndex = -1
                     }
-        
+
+                    this.extraLetter = this.word[this.currentWordIndex].querySelectorAll('.extra').length
+
+                    currentWordsLetter?.forEach(el=>{     
+                        if(el){
+                            if(el.classList.contains('extra')){
+                                el.remove()
+                            }
+                
+                            if(el.classList.contains('wrong')){
+                                el.classList.remove('wrong')
+                            }
+                
+                            if(el.classList.contains('right')){
+                                el.classList.remove('right')
+                            }
+                        }
+                    })
+
                     if(  this.currentLetterIndex == -2 &&
                          !this.isNext
                         ){
                         if(this.currentWordIndex > 0){
                             this.currentWordIndex--
-                            this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                            if(this.word[this.currentWordIndex]){
+                                this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                            }
                             this.word[this.currentWordIndex].removeAttribute('data-passedindex')
                         }
                     }
                 }
                 
                 if(this.isNext){
-                    this.currentWordIndex--
-                    this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
-                    this.word[this.currentWordIndex].removeAttribute('data-passedindex')
+                    if(this.currentWordIndex > 0 && this.ctrlBackCount < 1){
+                        this.currentWordIndex--
+                        console.log(this.currentWordIndex);
+                        if(this.word[this.currentWordIndex]){
+                            this.currentLetterIndex = this.word[this.currentWordIndex].dataset.passedindex
+                            this.word[this.currentWordIndex].removeAttribute('data-passedindex')
+                        }
+                    }
                     this.isNext = false
                 }
                 
@@ -865,6 +899,7 @@ class MyType{
     }
 
     resultPerSec(){
+        if(!this.word[this.currentWordIndex])  return
         if([...this.word[this.currentWordIndex].children].every(el => el.classList.contains('right'))){
             this.word[this.currentWordIndex].classList.add('correct-word')
         }

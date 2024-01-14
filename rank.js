@@ -52,10 +52,8 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
 
             sortinAllData(allData)
 
-            if( activeRowObj && localStorage.getItem(`isActiveFor${currentTemple.storageName}`) &&
-                localStorage.getItem(`isActiveFor${currentTemple.storageName}`) == 'yes'
-             ){
-                let crrPos = allData.findIndex(p=>p.id == activeRowObj.id)
+            if( activeRowObj){
+                let crrPos = allData.findIndex(p=>p.uniq == activeRowObj.uniq)
                 nextPrevValue = Math.floor(crrPos/limit)*limit
             }
 
@@ -88,9 +86,7 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
 
             function setAllForPaggBtn(){
                 localStorage.setItem('nextPrev'+currentTemple.name,nextPrevValue)
-                localStorage.setItem(`isActiveFor${currentTemple.storageName}`,'no')
                 controlNumberPagg()
-
                 allTableSet()
             }
 

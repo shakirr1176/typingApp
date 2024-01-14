@@ -570,7 +570,12 @@ class MyType{
             rawWPM: this.rawResult,
             accuracy: this.accuracy,
             rightWord: this.rightWord,
-            wrongWord: this.currentWordIndex+1 - this.rightWord
+            wrongWord: this.currentWordIndex+1 - this.rightWord,
+            graphData: {
+                totalTime: this.totalTime,
+                wpmData : this.wpmGraphData,
+                rawwpmData: this.rawwpmGraphData
+            }
         }
 
         rankArray.push(currentObj)
@@ -644,7 +649,12 @@ class MyType{
             accuracy: this.accuracy,
             rightWord: this.rightWord,
             wrongWord: this.currentWordIndex+1 - this.rightWord,
-            time: this.totalTime
+            time: this.totalTime,
+            graphData: {
+                totalTime: this.totalTime,
+                wpmData : this.wpmGraphData,
+                rawwpmData: this.rawwpmGraphData
+            }
         }
         
         this.historyArray.unshift(currentObj)

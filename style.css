@@ -833,3 +833,40 @@ tbody tr:nth-child(2n+1){
     margin-top: 32px;
    }
   }
+
+  .table-graph,.chart-cancel-btn{
+    width: 20px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: white;
+  }
+
+  .rank-canvas{
+    position: fixed;
+    inset: 0;
+    background: #020b27;
+    z-index: 10;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chart-cancel-btn{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 30px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: white;
+  }
+  .chart-cancel-btn:hover{
+    color: red;
+  }
+
+  .rank-canvas canvas{
+    width: 100%;
+  }

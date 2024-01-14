@@ -36,6 +36,7 @@ let table = `<div class="table-container">
                             <th>accuracy</th>
                             <th>right word</th>
                             <th>wrong word</th>
+                            <th>Graph</th> 
                             <th class="text-center">action</th>
                         </tr>
                     </thead>

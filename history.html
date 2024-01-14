@@ -6,8 +6,20 @@
     <title>rank</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 </head>
 <body>
+
+    <div class="rank-canvas hidden">
+        <button class="chart-cancel-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <canvas id="table-chart"></canvas>
+    </div>
+
     <div class="container">
         <div class="main">
             <div class="header">
@@ -32,6 +44,7 @@
                                 <th>right word</th>
                                 <th>wrong word</th>
                                 <th>time</th>
+                                <th>graph</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -60,6 +73,9 @@
                                 <td>${el.rightWord || el.rightWord == 0 ? el.rightWord : '-'}</td>
                                 <td>${el.wrongWord || el.wrongWord == 0 ? el.wrongWord : '-'}</td>
                                 <td>${el.time ? el.time : '-'}</td>
+                                <td>
+                                    ${el.graphData ? `<button data-totaltime=${el.graphData.totalTime} data-wpm=${el.graphData.wpmData} data-rawwpm=${el.graphData.rawwpmData} class="table-graph"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" /></svg></button>` : '-'}
+                                </td>
                                 `
                 tbody.append(tr)
             })
@@ -67,5 +83,116 @@
             tbody.innerHTML = '<td colspan="7" class="no-data">No Data</td>'   
         }
     </script>
+
+<script>
+    let rankCanvas = document.querySelector('.rank-canvas')
+
+    window.addEventListener('click', (e) => {
+        if (e.target.closest('.table-graph')) {
+            rankCanvas.classList.remove('hidden')
+
+            let btn = e.target.closest('.table-graph')
+
+            let totalTime = +btn.dataset['totaltime']
+            let wpmData = btn.dataset['wpm'].split(',')
+            let rawwpmData = btn.dataset['rawwpm'].split(',')
+
+            chartFunc(totalTime,wpmData,rawwpmData)
+        }
+        if(e.target.closest('.chart-cancel-btn')){
+            rankCanvas.classList.add('hidden')
+            rankCanvas.innerHTML = ''
+        }
+    })
+
+    function chartFunc(totalTime,wpmData,rawwpmData) {
+        rankCanvas.innerHTML = ` <button class="chart-cancel-btn">
+        <svg class="can" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+    </button>
+    <canvas id="table-chart"></canvas>`
+        const ctx = document.getElementById('table-chart');
+        const DATA_COUNT = +totalTime + 1;
+        const labels = [];
+        let step = 1
+
+        if (Math.round(+totalTime / 60) > 1) {
+            step = Math.round(+totalTime / 60) + 1
+        }
+        
+        for (let i = 1; i < DATA_COUNT; i = i + step) {
+            labels.push(i.toString());
+        }
+
+        const wpmGraphData = [];
+        const rawwpmGraphData = [];
+
+        for (let i = 0; i < wpmData.length; i = i + step) {
+            wpmGraphData.push(wpmData[i]);
+            rawwpmGraphData.push(rawwpmData[i])
+        }
+
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'wpm',
+                    data: wpmGraphData,
+                    borderColor: 'yellow',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: 'raw',
+                    data: rawwpmGraphData,
+                    borderWidth: 2,
+                    borderColor: 'gray',
+                    fill: true,
+                    tension: 0.4
+                },
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: ''
+                    },
+                },
+                interaction: {
+                    intersect: true,
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'w p m'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: Math.max(Math.max(...wpmGraphData), Math.max(...rawwpmGraphData)) + 20
+                    }
+                }
+            },
+        };
+
+        let aa = new Chart(ctx, config)
+    }
+
+</script>
 </body>
 </html>

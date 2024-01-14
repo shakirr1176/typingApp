@@ -1,26 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rank</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 </head>
+
 <body>
+
+    <div class="rank-canvas hidden">
+        <button class="chart-cancel-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <canvas id="table-chart"></canvas>
+    </div>
+
     <div class="confirm-delete hide">
         <div class="input-container">
             <div class="input-field">
                 <input type="text" placeholder="enter password">
                 <button class="confirm-delete-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
                 </button>
                 <button class="cancel-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>                  
+                    </svg>
                 </button>
                 <div class="user-name">shakir</div>
                 <p class="error-msg hide">wrong password</p>
@@ -28,37 +45,155 @@
         </div>
     </div>
     <div class="container">
-        
+
         <div class="main">
             <div class="header">
                 <h1 class="rank-title">All-Time English Leaderboards</h1>
-                               
+
                 <a class="btn" href="index.html">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                    </svg>   
-                   <span> back</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                    </svg>
+                    <span> back</span>
                 </a>
             </div>
             <div id="table-main"></div>
             <div class="paggination">
                 <button class="first-list-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
-                      </svg>                      
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                    </svg>
                 </button>
                 <button class="prev">Prev</button>
                 <div class="pagginatio-number"></div>
                 <button class="next">Next</button>
                 <button class="last-list-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
-                      </svg>                                        
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                    </svg>
                 </button>
             </div>
         </div>
     </div>
     <script type="module" src="rank.js"></script>
     <script src="color.js"></script>
+
+    <script>
+        let rankCanvas = document.querySelector('.rank-canvas')
+
+        window.addEventListener('click', (e) => {
+            if (e.target.closest('.table-graph')) {
+                rankCanvas.classList.remove('hidden')
+
+                let btn = e.target.closest('.table-graph')
+
+                let totalTime = +btn.dataset['totaltime']
+                let wpmData = btn.dataset['wpm'].split(',')
+                let rawwpmData = btn.dataset['rawwpm'].split(',')
+
+                chartFunc(totalTime,wpmData,rawwpmData)
+            }
+            if(e.target.closest('.chart-cancel-btn')){
+                rankCanvas.classList.add('hidden')
+                rankCanvas.innerHTML = ''
+            }
+        })
+
+        function chartFunc(totalTime,wpmData,rawwpmData) {
+            rankCanvas.innerHTML = ` <button class="chart-cancel-btn">
+            <svg class="can" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <canvas id="table-chart"></canvas>`
+            const ctx = document.getElementById('table-chart');
+            const DATA_COUNT = +totalTime + 1;
+            const labels = [];
+            let step = 1
+
+            if (Math.round(+totalTime / 60) > 1) {
+                step = Math.round(+totalTime / 60) + 1
+            }
+            
+            for (let i = 1; i < DATA_COUNT; i = i + step) {
+                labels.push(i.toString());
+            }
+
+            const wpmGraphData = [];
+            const rawwpmGraphData = [];
+
+            for (let i = 0; i < wpmData.length; i = i + step) {
+                wpmGraphData.push(wpmData[i]);
+                rawwpmGraphData.push(rawwpmData[i])
+            }
+
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'wpm',
+                        data: wpmGraphData,
+                        borderColor: 'yellow',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'raw',
+                        data: rawwpmGraphData,
+                        borderWidth: 2,
+                        borderColor: 'gray',
+                        fill: true,
+                        tension: 0.4
+                    },
+                ]
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: ''
+                        },
+                    },
+                    interaction: {
+                        intersect: true,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'w p m'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: Math.max(Math.max(...wpmGraphData), Math.max(...rawwpmGraphData)) + 20
+                        }
+                    }
+                },
+            };
+
+            let aa = new Chart(ctx, config)
+        }
+
+    </script>
 </body>
+
 </html>

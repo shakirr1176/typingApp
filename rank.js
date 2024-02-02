@@ -24,8 +24,8 @@ tableMain.innerHTML = localStorage.getItem('time') && timeMange.some(el=>el.time
 
     let currentTemple = allTemplate.find(x=> x.id == localStorage.getItem('time')) ? allTemplate.find(x=> x.id == localStorage.getItem('time')) : allTemplate[1]
     
-    let limit = 10
-    let maxPaggNum = 3
+    let limit = 20
+    let maxPaggNum = 4
     
     let nextPrevValue = localStorage.getItem('nextPrev'+currentTemple.name) ? +localStorage.getItem('nextPrev'+currentTemple.name) : 0
     let hold;

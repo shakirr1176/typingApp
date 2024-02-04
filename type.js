@@ -752,6 +752,8 @@ class MyType{
                     this.setAutoBot()
                 }
 
+                this.restart.blur();
+
                 this.ctrlBackCount = 0
 
                 this.line.classList.remove('line-animation')

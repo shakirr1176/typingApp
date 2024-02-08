@@ -282,15 +282,11 @@ class MyType{
     }
 
     fade(){
+        requestAnimationFrame(()=>{
+            this.paraContainer.classList.add('fade')
+        })
 
-        let fadeEvent = ()=>{
-            this.paraContainer.classList.remove('fade')
-        }
-        
-        this.paraContainer.classList.add('fade')
-
-        this.paraContainer.addEventListener('animationend',fadeEvent)
-        
+        this.paraContainer.classList.remove('fade')   
     }
 
     restartFunc(){

@@ -246,7 +246,7 @@ a:not(.leaderboard,.logo-con,.history){
 }
 
 .line-animation{
-    animation: line-anim 1500ms forwards infinite;
+    animation: line-anim 1000ms forwards infinite;
 }
 
 @keyframes line-anim{
